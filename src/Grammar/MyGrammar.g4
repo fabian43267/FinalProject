@@ -1,8 +1,7 @@
 grammar MyGrammar;
 
 
-assignment : TYPE? ID ASSIGN expr
-           ;
+assignment : TYPE? ID ASSIGN expr;
 
 statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
@@ -11,14 +10,14 @@ statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE stateme
 
 comp: expr COMP expr;
 expr: expr ADD term
-   | expr NEG term
+    | expr NEG term
     | term;
 term: expo MULT term
     | NEG term
     | expo;
 expo: <assoc=right> factor EXP expo
     | factor;
-factor: NUM_ID
+factor: NUM_ID | ID
       | LPARENT expr RPARENT;
 
 // keywords
@@ -44,10 +43,11 @@ MULT :    '*';
 ADD :     '+';
 
 // numbers & identifier
-NUM : '0'                     
-    | [1-9] DIGIT*;
-ID : LETTER (LETTER|DIGIT)*; 
-   
+ID : LETTER (LETTER|DIGIT)*;
+
+NUM_ID : '0' | [1-9] DIGIT*;
+
+
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
 
