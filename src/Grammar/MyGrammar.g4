@@ -10,13 +10,16 @@ statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE stateme
          | expr;
 
 comp: expr COMP expr;
-expr: expr ADD expr
-    | expr NEG expr
-    | expr MULT expr
-    | NEG expr
-    | <assoc=right> expr EXP expr
-    | NUM_ID
-    | LPARENT expr RPARENT;
+expr: expr ADD term
+   | expr NEG term
+    | term;
+term: expo MULT term
+    | NEG term
+    | expo;
+expo: <assoc=right> factor EXP expo
+    | factor;
+factor: NUM_ID
+      | LPARENT expr RPARENT;
 
 // keywords
 IF :    'if';
@@ -41,10 +44,10 @@ MULT :    '*';
 ADD :     '+';
 
 // numbers & identifier
-NUM_ID : '0'                     
-       | [1-9] DIGIT*            
-       | LETTER (LETTER|DIGIT)*; 
-       
+NUM : '0'                     
+    | [1-9] DIGIT*;
+ID : LETTER (LETTER|DIGIT)*; 
+   
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
 
