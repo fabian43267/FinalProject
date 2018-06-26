@@ -1,6 +1,10 @@
 grammar MyGrammar;
 
 
+statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
+         | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
+         | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE
+         | expr;
 
 comp: expr COMP expr;
 expr: expr ADD term
@@ -21,6 +25,7 @@ WHILE : 'while';
 
 
 COMMA :   ',';
+SC :      ';';
 QUOTE :   '"';
 ASSIGN :  '=';
 LBRACE :  '{';
