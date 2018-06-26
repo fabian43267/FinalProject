@@ -20,7 +20,7 @@ term: expo MULT term
     | expo;
 expo: <assoc=right> factor EXP expo
     | factor;
-factor: NUM
+factor: NUM_ID
       | LPARENT expr RPARENT;
 
 // keywords
@@ -45,9 +45,13 @@ NEG :     '-';
 MULT :    '*';
 ADD :     '+';
 
-// numbers & digits
-NUM : '0' | ('1'..'9')('0'..'9')*;
-ID : [a-zA-Z] [a-zA-Z0-9]*;
+// numbers & identifier
+NUM_ID : '0'                     
+       | [1-9] DIGIT*            
+       | LETTER (LETTER|DIGIT)*; 
+       
+fragment LETTER : [a-zA-Z];
+fragment DIGIT : [0-9];
 
 // comparison
 COMP : EQ | NE | GE | GT | LE | LT;
