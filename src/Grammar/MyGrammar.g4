@@ -1,5 +1,6 @@
 grammar MyGrammar;
 
+program : statement+;
 
 assignment : TYPE? ID ASSIGN expr
            | TYPE ID ASSIGN LSQBRAC NUM (COMMA NUM)* RSQBRAC;
@@ -18,7 +19,7 @@ term: expo MULT term
     | expo;
 expo: <assoc=right> factor EXP expo
     | factor;
-factor: NUM | ID
+factor: NUM | ID | CHAR | BOOL
       | LPARENT expr RPARENT;
 
 // keywords
@@ -31,6 +32,7 @@ FOR : 'for';
 COMMA :   ',';
 SC :      ';';
 QUOTE :   '"';
+SQUOTE :  '\'';
 ASSIGN :  '=';
 LBRACE :  '{';
 RBRACE :  '}';
@@ -50,11 +52,11 @@ fragment TYPE_INT : 'int';
 fragment TYPE_BOOL : 'bool';
 fragment TYPE_CHAR : 'char';
 
-// numbers & identifier
+// variables
 ID : LETTER (LETTER|DIGIT)*;
-
 NUM : '0' | [1-9] DIGIT*;
-
+BOOL : 'true' | 'false';
+CHAR : SQUOTE (~SQUOTE) SQUOTE;
 
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
