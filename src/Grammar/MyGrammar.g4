@@ -1,6 +1,8 @@
 grammar MyGrammar;
 
-
+assignment : TYPE ID ASSIGN expr
+           | ID ASSIGN expr
+           ;
 
 comp: expr COMP expr;
 expr: expr ADD term
@@ -14,12 +16,12 @@ expo: <assoc=right> factor EXP expo
 factor: NUM
       | LPARENT expr RPARENT;
 
-
+// keywords
 IF :    'if';
 ELSE :  'else';
 WHILE : 'while';
 
-
+// symbols
 COMMA :   ',';
 QUOTE :   '"';
 ASSIGN :  '=';
@@ -34,7 +36,11 @@ NEG :     '-';
 MULT :    '*';
 ADD :     '+';
 
+// numbers & digits
 NUM : '0' | ('1'..'9')('0'..'9')*;
+ID : [a-zA-Z] [a-zA-Z0-9]*;
+
+// comparison
 COMP : EQ | NE | GE | GT | LE | LT;
 
 fragment EQ : '==';
@@ -43,6 +49,13 @@ fragment GE : '>=';
 fragment GT : '>';
 fragment LE : '<=';
 fragment LT : '<';
+
+// types
+TYPE : TYPE_INT | TYPE_BOOL | TYPE_CHAR;
+
+fragment TYPE_INT : 'int';
+fragment TYPE_BOOL : 'bool';
+fragment TYPE_CHAR : 'char';
 
 //ignore whitespaces
 WS : [ \t\n\r] -> skip;
