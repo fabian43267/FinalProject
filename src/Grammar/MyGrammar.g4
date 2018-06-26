@@ -3,7 +3,7 @@ grammar MyGrammar;
 program : statement+;
 
 assignment : TYPE? ID ASSIGN expr
-           | TYPE ID ASSIGN LSQBRAC NUM (COMMA NUM)* RSQBRAC;
+           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC;
 
 statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
