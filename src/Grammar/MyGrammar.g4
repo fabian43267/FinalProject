@@ -1,7 +1,8 @@
 grammar MyGrammar;
 
 
-assignment : TYPE? ID ASSIGN expr;
+assignment : TYPE? ID ASSIGN expr
+           | TYPE ID ASSIGN LSQBRAC NUM (COMMA NUM)* RSQBRAC;
 
 statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
@@ -17,7 +18,7 @@ term: expo MULT term
     | expo;
 expo: <assoc=right> factor EXP expo
     | factor;
-factor: NUM_ID | ID
+factor: NUM | ID
       | LPARENT expr RPARENT;
 
 // keywords
@@ -42,10 +43,17 @@ NEG :     '-';
 MULT :    '*';
 ADD :     '+';
 
+// types
+TYPE : TYPE_INT | TYPE_BOOL | TYPE_CHAR;
+
+fragment TYPE_INT : 'int';
+fragment TYPE_BOOL : 'bool';
+fragment TYPE_CHAR : 'char';
+
 // numbers & identifier
 ID : LETTER (LETTER|DIGIT)*;
 
-NUM_ID : '0' | [1-9] DIGIT*;
+NUM : '0' | [1-9] DIGIT*;
 
 
 fragment LETTER : [a-zA-Z];
@@ -60,13 +68,6 @@ fragment GE : '>=';
 fragment GT : '>';
 fragment LE : '<=';
 fragment LT : '<';
-
-// types
-TYPE : TYPE_INT | TYPE_BOOL | TYPE_CHAR;
-
-fragment TYPE_INT : 'int';
-fragment TYPE_BOOL : 'bool';
-fragment TYPE_CHAR : 'char';
 
 //ignore whitespaces
 WS : [ \t\n\r] -> skip;
