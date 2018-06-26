@@ -19,7 +19,10 @@ term: expo MULT term
     | expo;
 expo: <assoc=right> factor EXP expo
     | factor;
-factor: NUM | ID | CHAR | BOOL
+factor: NUM
+      | ID (LSQBRAC NUM RSQBRAC)? 
+      | CHAR 
+      | BOOL
       | LPARENT expr RPARENT;
 
 // keywords
