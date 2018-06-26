@@ -1,8 +1,7 @@
 grammar MyGrammar;
 
 
-assignment : TYPE ID ASSIGN expr
-           | ID ASSIGN expr
+assignment : TYPE? ID ASSIGN expr
            ;
 
 statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
@@ -10,18 +9,14 @@ statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE stateme
          | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE
          | expr;
 
-
 comp: expr COMP expr;
-expr: expr ADD term
-    | expr NEG term
-    | term;
-term: expo MULT term
-    | NEG term
-    | expo;
-expo: <assoc=right> factor EXP expo
-    | factor;
-factor: NUM_ID
-      | LPARENT expr RPARENT;
+expr: expr ADD expr
+    | expr NEG expr
+    | expr MULT expr
+    | NEG expr
+    | <assoc=right> expr EXP expr
+    | NUM_ID
+    | LPARENT expr RPARENT;
 
 // keywords
 IF :    'if';
