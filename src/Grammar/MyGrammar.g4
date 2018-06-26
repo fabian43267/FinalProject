@@ -1,8 +1,15 @@
 grammar MyGrammar;
 
+
 assignment : TYPE ID ASSIGN expr
            | ID ASSIGN expr
            ;
+
+statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
+         | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
+         | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE
+         | expr;
+
 
 comp: expr COMP expr;
 expr: expr ADD term
@@ -20,9 +27,11 @@ factor: NUM
 IF :    'if';
 ELSE :  'else';
 WHILE : 'while';
+FOR : 'for';
 
 // symbols
 COMMA :   ',';
+SC :      ';';
 QUOTE :   '"';
 ASSIGN :  '=';
 LBRACE :  '{';
