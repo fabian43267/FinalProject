@@ -56,7 +56,7 @@ fragment TYPE_CHAR : 'char';
 ID : LETTER (LETTER|DIGIT)*;
 NUM : '0' | [1-9] DIGIT*;
 BOOL : 'true' | 'false';
-CHAR : SQUOTE (~SQUOTE) SQUOTE;
+CHAR : SQUOTE ~('\'') SQUOTE;
 
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
