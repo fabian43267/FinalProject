@@ -3,7 +3,7 @@ grammar MyGrammar;
 program : statement+;
 
 assignment : TYPE? ID ASSIGN expr
-           | TYPE ID ASSIGN LSQBRAC NUM (COMMA NUM)* RSQBRAC;
+           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC;
 
 statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
@@ -19,7 +19,10 @@ term: expo MULT term
     | expo;
 expo: <assoc=right> factor EXP expo
     | factor;
-factor: NUM | ID | CHAR | BOOL
+factor: NUM
+      | BOOL
+      | ID (LSQBRAC NUM RSQBRAC)?
+      | CHAR
       | LPARENT expr RPARENT;
 
 // keywords
@@ -53,10 +56,10 @@ fragment TYPE_BOOL : 'bool';
 fragment TYPE_CHAR : 'char';
 
 // variables
+BOOL : 'true' | 'false';
 ID : LETTER (LETTER|DIGIT)*;
 NUM : '0' | [1-9] DIGIT*;
-BOOL : 'true' | 'false';
-CHAR : SQUOTE (~SQUOTE) SQUOTE;
+CHAR : SQUOTE ~('\'') SQUOTE;
 
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
