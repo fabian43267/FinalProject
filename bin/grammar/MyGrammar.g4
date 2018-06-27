@@ -2,8 +2,10 @@ grammar MyGrammar;
 
 program : statement+;
 
-assignment : TYPE? ID ASSIGN expr                              # varAssign
-           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC # arrayAssign
+assignment : TYPE ID ASSIGN expr                               # declAssign
+           | ID ASSIGN expr                                    # varAssign
+           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC # arrayDeclAssign
+           | ID LSQBRAC expr RSQBRAC ASSIGN expr               # arrayAssign
            ;
 
 statement : IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE # ifStat
@@ -13,6 +15,7 @@ statement : IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statem
           ;
 
 comp : expr COMP expr;
+
 expr : expr ADD term # addExpr
      | expr NEG term # negExpr
      | term          # termExpr
@@ -24,11 +27,12 @@ term: expo MULT term # multTerm
 expo: <assoc=right> factor EXP expo # expExpo
     | factor                        # factorExpo
     ;
-factor: NUM                       # numFactor
-      | BOOL                      # boolFactor
-      | ID (LSQBRAC NUM RSQBRAC)? # varFactor
-      | CHAR                      # charFactor
-      | LPARENT expr RPARENT      # parFactor
+factor: NUM                    # numFactor
+      | BOOL                   # boolFactor
+      | ID                     # varFactor
+      | ID LSQBRAC NUM RSQBRAC # arrayFactor
+      | CHAR                   # charFactor
+      | LPARENT expr RPARENT   # parFactor
       ;
 
 // keywords

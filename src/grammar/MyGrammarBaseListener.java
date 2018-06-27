@@ -53,6 +53,18 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDeclAssign(@NotNull MyGrammarParser.DeclAssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclAssign(@NotNull MyGrammarParser.DeclAssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -60,6 +72,18 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayDeclAssign(@NotNull MyGrammarParser.ArrayDeclAssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayDeclAssign(@NotNull MyGrammarParser.ArrayDeclAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -228,6 +252,18 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNegExpr(@NotNull MyGrammarParser.NegExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayFactor(@NotNull MyGrammarParser.ArrayFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayFactor(@NotNull MyGrammarParser.ArrayFactorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
