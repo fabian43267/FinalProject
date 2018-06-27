@@ -1,5 +1,5 @@
 // Generated from MyGrammar.g4 by ANTLR 4.4
-package Grammar;
+package grammar;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
