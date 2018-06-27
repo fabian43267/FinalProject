@@ -34,5 +34,4 @@ public class ScopeTest {
 		scope.closeScope();
 		assertEquals(scope.getType("a"), Type.INT);
 	}
-
 }

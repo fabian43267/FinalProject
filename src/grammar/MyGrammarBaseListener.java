@@ -17,6 +17,30 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIfStat(@NotNull MyGrammarParser.IfStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfStat(@NotNull MyGrammarParser.IfStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCharFactor(@NotNull MyGrammarParser.CharFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCharFactor(@NotNull MyGrammarParser.CharFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterComp(@NotNull MyGrammarParser.CompContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -29,49 +53,97 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignment(@NotNull MyGrammarParser.AssignmentContext ctx) { }
+	@Override public void enterNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignment(@NotNull MyGrammarParser.AssignmentContext ctx) { }
+	@Override public void exitNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(@NotNull MyGrammarParser.StatementContext ctx) { }
+	@Override public void enterArrayAssign(@NotNull MyGrammarParser.ArrayAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStatement(@NotNull MyGrammarParser.StatementContext ctx) { }
+	@Override public void exitArrayAssign(@NotNull MyGrammarParser.ArrayAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr(@NotNull MyGrammarParser.ExprContext ctx) { }
+	@Override public void enterExprStat(@NotNull MyGrammarParser.ExprStatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr(@NotNull MyGrammarParser.ExprContext ctx) { }
+	@Override public void exitExprStat(@NotNull MyGrammarParser.ExprStatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTerm(@NotNull MyGrammarParser.TermContext ctx) { }
+	@Override public void enterTermExpr(@NotNull MyGrammarParser.TermExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTerm(@NotNull MyGrammarParser.TermContext ctx) { }
+	@Override public void exitTermExpr(@NotNull MyGrammarParser.TermExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNegTerm(@NotNull MyGrammarParser.NegTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNegTerm(@NotNull MyGrammarParser.NegTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFactorExpo(@NotNull MyGrammarParser.FactorExpoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFactorExpo(@NotNull MyGrammarParser.FactorExpoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExpExpo(@NotNull MyGrammarParser.ExpExpoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpExpo(@NotNull MyGrammarParser.ExpExpoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarFactor(@NotNull MyGrammarParser.VarFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarFactor(@NotNull MyGrammarParser.VarFactorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -89,25 +161,109 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFactor(@NotNull MyGrammarParser.FactorContext ctx) { }
+	@Override public void enterVarAssign(@NotNull MyGrammarParser.VarAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFactor(@NotNull MyGrammarParser.FactorContext ctx) { }
+	@Override public void exitVarAssign(@NotNull MyGrammarParser.VarAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpo(@NotNull MyGrammarParser.ExpoContext ctx) { }
+	@Override public void enterForStat(@NotNull MyGrammarParser.ForStatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpo(@NotNull MyGrammarParser.ExpoContext ctx) { }
+	@Override public void exitForStat(@NotNull MyGrammarParser.ForStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParFactor(@NotNull MyGrammarParser.ParFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParFactor(@NotNull MyGrammarParser.ParFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMultTerm(@NotNull MyGrammarParser.MultTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMultTerm(@NotNull MyGrammarParser.MultTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAddExpr(@NotNull MyGrammarParser.AddExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAddExpr(@NotNull MyGrammarParser.AddExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNegExpr(@NotNull MyGrammarParser.NegExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNegExpr(@NotNull MyGrammarParser.NegExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExpoTerm(@NotNull MyGrammarParser.ExpoTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpoTerm(@NotNull MyGrammarParser.ExpoTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolFactor(@NotNull MyGrammarParser.BoolFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolFactor(@NotNull MyGrammarParser.BoolFactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

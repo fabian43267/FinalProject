@@ -2,28 +2,34 @@ grammar MyGrammar;
 
 program : statement+;
 
-assignment : TYPE? ID ASSIGN expr
-           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC;
+assignment : TYPE? ID ASSIGN expr                              # varAssign
+           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC # arrayAssign
+           ;
 
-statement: IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE
-         | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE
-         | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE
-         | expr;
+statement : IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE # ifStat
+          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE                               # whileStat
+          | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE           # forStat
+          | expr                                                                              # exprStat
+          ;
 
-comp: expr COMP expr;
-expr: expr ADD term
-    | expr NEG term
-    | term;
-term: expo MULT term
-    | NEG term
-    | expo;
-expo: <assoc=right> factor EXP expo
-    | factor;
-factor: NUM
-      | BOOL
-      | ID (LSQBRAC NUM RSQBRAC)?
-      | CHAR
-      | LPARENT expr RPARENT;
+comp : expr COMP expr;
+expr : expr ADD term # addExpr
+     | expr NEG term # negExpr
+     | term          # termExpr
+     ;
+term: expo MULT term # multTerm
+    | NEG term       # negTerm
+    | expo           # expoTerm
+    ;
+expo: <assoc=right> factor EXP expo # expExpo
+    | factor                        # factorExpo
+    ;
+factor: NUM                       # numFactor
+      | BOOL                      # boolFactor
+      | ID (LSQBRAC NUM RSQBRAC)? # varFactor
+      | CHAR                      # charFactor
+      | LPARENT expr RPARENT      # parFactor
+      ;
 
 // keywords
 IF :    'if';

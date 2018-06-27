@@ -6,12 +6,10 @@ import grammar.MyGrammarBaseListener;
 
 public class Checker extends MyGrammarBaseListener {
 	private ParseTreeProperty<Type> types;
+	private Scope scope;
 	
 	public Checker() {
 		types = new ParseTreeProperty<>();
-	}
-	
-	public void exitFactor() {
-		
+		scope = new Scope();
 	}
 }
