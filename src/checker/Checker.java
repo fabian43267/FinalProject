@@ -70,12 +70,20 @@ public class Checker extends MyGrammarBaseListener {
 
 	@Override
 	public void exitArrayFactor(ArrayFactorContext ctx) {
-		if (scope.isDefined(ctx.ID().getText())) {
-			types.put(ctx, scope.getType(ctx.ID().getText()));
-		} else {
+		if (!scope.isDefined(ctx.ID().getText())) {
 			Token t = ctx.ID().getSymbol();
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable "
 					+ ctx.ID().getText() + " not defined");
+		} else {
+			Type t1 = scope.getType(ctx.ID().getText());
+			Type t2 = types.get(ctx.expr());
+			
+			if (t2 == Type.INT) {
+				types.put(ctx, t1);
+			} else {
+				Token t = ctx.ID().getSymbol();
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Index has to be a number");
+			}
 		}
 	}
 

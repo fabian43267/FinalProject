@@ -9,18 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface MyGrammarListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by the {@code ifStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterIfStat(@NotNull MyGrammarParser.IfStatContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ifStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitIfStat(@NotNull MyGrammarParser.IfStatContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code charFactor}
 	 * labeled alternative in {@link MyGrammarParser#factor}.
 	 * @param ctx the parse tree
@@ -33,52 +21,6 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 */
 	void exitCharFactor(@NotNull MyGrammarParser.CharFactorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MyGrammarParser#comp}.
-	 * @param ctx the parse tree
-	 */
-	void enterComp(@NotNull MyGrammarParser.CompContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MyGrammarParser#comp}.
-	 * @param ctx the parse tree
-	 */
-	void exitComp(@NotNull MyGrammarParser.CompContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code declAssign}
-	 * labeled alternative in {@link MyGrammarParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclAssign(@NotNull MyGrammarParser.DeclAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code declAssign}
-	 * labeled alternative in {@link MyGrammarParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclAssign(@NotNull MyGrammarParser.DeclAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code numFactor}
-	 * labeled alternative in {@link MyGrammarParser#factor}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code numFactor}
-	 * labeled alternative in {@link MyGrammarParser#factor}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code arrayDeclAssign}
-	 * labeled alternative in {@link MyGrammarParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayDeclAssign(@NotNull MyGrammarParser.ArrayDeclAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arrayDeclAssign}
-	 * labeled alternative in {@link MyGrammarParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayDeclAssign(@NotNull MyGrammarParser.ArrayDeclAssignContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code arrayAssign}
 	 * labeled alternative in {@link MyGrammarParser#assignment}.
 	 * @param ctx the parse tree
@@ -90,18 +32,6 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArrayAssign(@NotNull MyGrammarParser.ArrayAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code exprStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprStat(@NotNull MyGrammarParser.ExprStatContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code exprStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprStat(@NotNull MyGrammarParser.ExprStatContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code termExpr}
 	 * labeled alternative in {@link MyGrammarParser#expr}.
@@ -173,30 +103,6 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 */
 	void exitProgram(@NotNull MyGrammarParser.ProgramContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code varAssign}
-	 * labeled alternative in {@link MyGrammarParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterVarAssign(@NotNull MyGrammarParser.VarAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code varAssign}
-	 * labeled alternative in {@link MyGrammarParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitVarAssign(@NotNull MyGrammarParser.VarAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code forStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterForStat(@NotNull MyGrammarParser.ForStatContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code forStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitForStat(@NotNull MyGrammarParser.ForStatContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code parFactor}
 	 * labeled alternative in {@link MyGrammarParser#factor}.
 	 * @param ctx the parse tree
@@ -220,6 +126,148 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMultTerm(@NotNull MyGrammarParser.MultTermContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code expoTerm}
+	 * labeled alternative in {@link MyGrammarParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpoTerm(@NotNull MyGrammarParser.ExpoTermContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code expoTerm}
+	 * labeled alternative in {@link MyGrammarParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpoTerm(@NotNull MyGrammarParser.ExpoTermContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code boolFactor}
+	 * labeled alternative in {@link MyGrammarParser#factor}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolFactor(@NotNull MyGrammarParser.BoolFactorContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code boolFactor}
+	 * labeled alternative in {@link MyGrammarParser#factor}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolFactor(@NotNull MyGrammarParser.BoolFactorContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code assignExpr}
+	 * labeled alternative in {@link MyGrammarParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignExpr(@NotNull MyGrammarParser.AssignExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code assignExpr}
+	 * labeled alternative in {@link MyGrammarParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignExpr(@NotNull MyGrammarParser.AssignExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code whileStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code whileStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ifStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStat(@NotNull MyGrammarParser.IfStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ifStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStat(@NotNull MyGrammarParser.IfStatContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MyGrammarParser#comp}.
+	 * @param ctx the parse tree
+	 */
+	void enterComp(@NotNull MyGrammarParser.CompContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MyGrammarParser#comp}.
+	 * @param ctx the parse tree
+	 */
+	void exitComp(@NotNull MyGrammarParser.CompContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declAssign}
+	 * labeled alternative in {@link MyGrammarParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclAssign(@NotNull MyGrammarParser.DeclAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declAssign}
+	 * labeled alternative in {@link MyGrammarParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclAssign(@NotNull MyGrammarParser.DeclAssignContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code numFactor}
+	 * labeled alternative in {@link MyGrammarParser#factor}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code numFactor}
+	 * labeled alternative in {@link MyGrammarParser#factor}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumFactor(@NotNull MyGrammarParser.NumFactorContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code arrayDeclAssign}
+	 * labeled alternative in {@link MyGrammarParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayDeclAssign(@NotNull MyGrammarParser.ArrayDeclAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code arrayDeclAssign}
+	 * labeled alternative in {@link MyGrammarParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayDeclAssign(@NotNull MyGrammarParser.ArrayDeclAssignContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprStat(@NotNull MyGrammarParser.ExprStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprStat(@NotNull MyGrammarParser.ExprStatContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code varAssign}
+	 * labeled alternative in {@link MyGrammarParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarAssign(@NotNull MyGrammarParser.VarAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code varAssign}
+	 * labeled alternative in {@link MyGrammarParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarAssign(@NotNull MyGrammarParser.VarAssignContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code forStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForStat(@NotNull MyGrammarParser.ForStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code forStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForStat(@NotNull MyGrammarParser.ForStatContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code addExpr}
 	 * labeled alternative in {@link MyGrammarParser#expr}.
@@ -256,40 +304,4 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArrayFactor(@NotNull MyGrammarParser.ArrayFactorContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code expoTerm}
-	 * labeled alternative in {@link MyGrammarParser#term}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpoTerm(@NotNull MyGrammarParser.ExpoTermContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code expoTerm}
-	 * labeled alternative in {@link MyGrammarParser#term}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpoTerm(@NotNull MyGrammarParser.ExpoTermContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code boolFactor}
-	 * labeled alternative in {@link MyGrammarParser#factor}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolFactor(@NotNull MyGrammarParser.BoolFactorContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code boolFactor}
-	 * labeled alternative in {@link MyGrammarParser#factor}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolFactor(@NotNull MyGrammarParser.BoolFactorContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code whileStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code whileStat}
-	 * labeled alternative in {@link MyGrammarParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx);
 }

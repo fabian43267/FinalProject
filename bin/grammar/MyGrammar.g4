@@ -19,6 +19,7 @@ comp : expr COMP expr;
 expr : expr ADD term # addExpr
      | expr NEG term # negExpr
      | term          # termExpr
+     | assignment    # assignExpr
      ;
 term: expo MULT term # multTerm
     | NEG term       # negTerm
@@ -27,12 +28,12 @@ term: expo MULT term # multTerm
 expo: <assoc=right> factor EXP expo # expExpo
     | factor                        # factorExpo
     ;
-factor: NUM                    # numFactor
-      | BOOL                   # boolFactor
-      | ID                     # varFactor
-      | ID LSQBRAC NUM RSQBRAC # arrayFactor
-      | CHAR                   # charFactor
-      | LPARENT expr RPARENT   # parFactor
+factor: NUM                     # numFactor
+      | BOOL                    # boolFactor
+      | ID                      # varFactor
+      | ID LSQBRAC expr RSQBRAC # arrayFactor
+      | CHAR                    # charFactor
+      | LPARENT expr RPARENT    # parFactor
       ;
 
 // keywords
