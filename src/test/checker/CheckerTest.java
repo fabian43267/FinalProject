@@ -25,10 +25,12 @@ public class CheckerTest {
 		System.out.println("-- wrong_program1.txt --");
 		errors = Checker.checkProgram(PROG_DIR + "wrong_program1.txt");
 		printErrors(errors);
+		assertEquals(errors.size(), 2);
 		
 		System.out.println("-- wrong_program2.txt --");
 		errors = Checker.checkProgram(PROG_DIR + "wrong_program2.txt");
 		printErrors(errors);
+		assertEquals(errors.size(), 2);
 	}
 	
 	public static void printErrors(ArrayList<String> errors) {
