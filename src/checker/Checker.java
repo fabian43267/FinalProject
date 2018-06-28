@@ -14,8 +14,8 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import grammar.MyGrammarBaseListener;
-import grammar.MyGrammarParser;
 import grammar.MyGrammarLexer;
+import grammar.MyGrammarParser;
 import grammar.MyGrammarParser.AddExprContext;
 import grammar.MyGrammarParser.ArrayAssignContext;
 import grammar.MyGrammarParser.ArrayDeclAssignContext;
@@ -29,8 +29,6 @@ import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
 import grammar.MyGrammarParser.ExprContext;
 import grammar.MyGrammarParser.FactorExpoContext;
-import grammar.MyGrammarParser.ForStatContext;
-import grammar.MyGrammarParser.IfStatContext;
 import grammar.MyGrammarParser.MultTermContext;
 import grammar.MyGrammarParser.NegExprContext;
 import grammar.MyGrammarParser.NegTermContext;
@@ -39,7 +37,6 @@ import grammar.MyGrammarParser.ParFactorContext;
 import grammar.MyGrammarParser.TermExprContext;
 import grammar.MyGrammarParser.VarAssignContext;
 import grammar.MyGrammarParser.VarFactorContext;
-import grammar.MyGrammarParser.WhileStatContext;
 
 public class Checker extends MyGrammarBaseListener {
 	private ParseTreeProperty<Type> types;
