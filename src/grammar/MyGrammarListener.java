@@ -255,6 +255,30 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 */
 	void exitExprStat(@NotNull MyGrammarParser.ExprStatContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code forkStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForkStat(@NotNull MyGrammarParser.ForkStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code forkStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForkStat(@NotNull MyGrammarParser.ForkStatContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code joinStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinStat(@NotNull MyGrammarParser.JoinStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code joinStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinStat(@NotNull MyGrammarParser.JoinStatContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code varAssign}
 	 * labeled alternative in {@link MyGrammarParser#assignment}.
 	 * @param ctx the parse tree

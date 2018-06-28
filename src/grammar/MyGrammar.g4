@@ -11,6 +11,8 @@ assignment : TYPE ID ASSIGN expr                               # declAssign
 statement : IF LPARENT comp RPARENT block (ELSE block)?          # ifStat
           | WHILE LPARENT comp RPARENT block                     # whileStat
           | FOR LPARENT assignment SC comp SC expr RPARENT block # forStat
+          | FORK block                                           # forkStat
+          | JOIN                                                 # joinStat
           | expr                                                 # exprStat
           | comment                                              # commentStat
           ;
@@ -46,6 +48,8 @@ IF :    'if';
 ELSE :  'else';
 WHILE : 'while';
 FOR : 'for';
+FORK : 'fork';
+JOIN : 'join';
 
 // symbols
 COMMA :   ',';
