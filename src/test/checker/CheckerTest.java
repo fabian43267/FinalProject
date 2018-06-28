@@ -21,10 +21,14 @@ public class CheckerTest {
 	@Test
 	public void testWrongProgs() {
 		ArrayList<String> errors;
+		
+		System.out.println("-- wrong_program1.txt --");
 		errors = Checker.checkProgram(PROG_DIR + "wrong_program1.txt");
-		System.out.println(errors.size());
 		printErrors(errors);
 		
+		System.out.println("-- wrong_program2.txt --");
+		errors = Checker.checkProgram(PROG_DIR + "wrong_program2.txt");
+		printErrors(errors);
 	}
 	
 	public static void printErrors(ArrayList<String> errors) {

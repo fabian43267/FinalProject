@@ -20,11 +20,11 @@ import grammar.MyGrammarParser.AddExprContext;
 import grammar.MyGrammarParser.ArrayAssignContext;
 import grammar.MyGrammarParser.ArrayDeclAssignContext;
 import grammar.MyGrammarParser.ArrayFactorContext;
+import grammar.MyGrammarParser.BlockContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
-import grammar.MyGrammarParser.ElseStatContext;
 import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
 import grammar.MyGrammarParser.ExprContext;
@@ -352,35 +352,11 @@ public class Checker extends MyGrammarBaseListener {
 	// -------------------- statement rules -------------------------
 	// --------------------------------------------------------------
 
-	public void enterWhileStat(WhileStatContext ctx) {
+	public void enterBlock(BlockContext ctx) {
 		scope.openScope();
 	}
 	
-	public void exitWhileStat(WhileStatContext ctx) {
-		scope.closeScope();
-	}
-	
-	public void enterForStat(ForStatContext ctx) {
-		scope.openScope();
-	}
-	
-	public void exitForStat(ForStatContext ctx) {
-		scope.closeScope();
-	}
-	
-	public void enterIfStat(IfStatContext ctx) {
-		scope.openScope();
-	}
-	
-	public void exitIfStat(IfStatContext ctx) {
-		scope.closeScope();
-	}
-	
-	public void enterElseStat(ElseStatContext ctx) {
-		scope.openScope();
-	}
-	
-	public void exitElseStat(ElseStatContext ctx) {
+	public void exitBlock(BlockContext ctx) {
 		scope.closeScope();
 	}
 }
