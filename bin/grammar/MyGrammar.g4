@@ -12,9 +12,12 @@ statement : IF LPARENT comp RPARENT LBRACE statement+ RBRACE elseStat?          
           | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE                     # whileStat
           | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE # forStat
           | expr                                                                    # exprStat
+          | comment                                                                 # commentStat
           ;
           
 elseStat : ELSE LBRACE statement+ RBRACE;
+
+comment : '#' (~('#'))* '#';
 
 comp : expr COMP expr;
 

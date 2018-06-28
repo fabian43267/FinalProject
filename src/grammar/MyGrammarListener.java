@@ -279,6 +279,18 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 */
 	void exitForStat(@NotNull MyGrammarParser.ForStatContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code commentStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterCommentStat(@NotNull MyGrammarParser.CommentStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code commentStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitCommentStat(@NotNull MyGrammarParser.CommentStatContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code addExpr}
 	 * labeled alternative in {@link MyGrammarParser#expr}.
 	 * @param ctx the parse tree
@@ -302,6 +314,16 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNegExpr(@NotNull MyGrammarParser.NegExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MyGrammarParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterComment(@NotNull MyGrammarParser.CommentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MyGrammarParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitComment(@NotNull MyGrammarParser.CommentContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code arrayFactor}
 	 * labeled alternative in {@link MyGrammarParser#factor}.
