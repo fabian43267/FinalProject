@@ -37,6 +37,10 @@ public class Scope {
 		return null;
 	}
 	
+	public boolean isInCurrentScope(String id) {
+		return scopes.peek().containsKey(id);
+	}
+	
 	public void openScope() {
 		scopes.push(new HashMap<>());
 	}

@@ -8,11 +8,13 @@ assignment : TYPE ID ASSIGN expr                               # declAssign
            | ID LSQBRAC expr RSQBRAC ASSIGN expr               # arrayAssign
            ;
 
-statement : IF LPARENT comp RPARENT LBRACE statement+ (RBRACE ELSE LBRACE statement+)? RBRACE # ifStat
-          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE                               # whileStat
-          | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE           # forStat
-          | expr                                                                              # exprStat
+statement : IF LPARENT comp RPARENT LBRACE statement+ RBRACE elseStat?              # ifStat
+          | WHILE LPARENT comp RPARENT LBRACE statement+ RBRACE                     # whileStat
+          | FOR LPARENT assignment SC comp SC expr RPARENT LBRACE statement+ RBRACE # forStat
+          | expr                                                                    # exprStat
           ;
+          
+elseStat : ELSE LBRACE statement+ RBRACE;
 
 comp : expr COMP expr;
 

@@ -1,11 +1,21 @@
 package checker;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import grammar.MyGrammarBaseListener;
+import grammar.MyGrammarParser;
+import grammar.MyGrammarLexer;
 import grammar.MyGrammarParser.AddExprContext;
 import grammar.MyGrammarParser.ArrayAssignContext;
 import grammar.MyGrammarParser.ArrayDeclAssignContext;
@@ -14,10 +24,13 @@ import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
+import grammar.MyGrammarParser.ElseStatContext;
 import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
 import grammar.MyGrammarParser.ExprContext;
 import grammar.MyGrammarParser.FactorExpoContext;
+import grammar.MyGrammarParser.ForStatContext;
+import grammar.MyGrammarParser.IfStatContext;
 import grammar.MyGrammarParser.MultTermContext;
 import grammar.MyGrammarParser.NegExprContext;
 import grammar.MyGrammarParser.NegTermContext;
@@ -26,6 +39,7 @@ import grammar.MyGrammarParser.ParFactorContext;
 import grammar.MyGrammarParser.TermExprContext;
 import grammar.MyGrammarParser.VarAssignContext;
 import grammar.MyGrammarParser.VarFactorContext;
+import grammar.MyGrammarParser.WhileStatContext;
 
 public class Checker extends MyGrammarBaseListener {
 	private ParseTreeProperty<Type> types;
@@ -36,6 +50,33 @@ public class Checker extends MyGrammarBaseListener {
 		types = new ParseTreeProperty<>();
 		scope = new Scope();
 		errors = new ArrayList<>();
+	}
+	
+	public static ArrayList<String> checkProgram(String file) {
+		Checker checker = new Checker();
+		
+		try {
+			ParseTree tree = parse(file);
+			ParseTreeWalker walker = new ParseTreeWalker();
+			walker.walk(checker, tree);
+		} catch (IOException e) {
+			System.out.println("Error: File could not be read");
+		}
+		
+		return checker.getErrors();
+	}
+	
+	public ArrayList<String> getErrors() {
+		return errors;
+	}
+	
+	public static ParseTree parse(String file) throws IOException {
+		Lexer lexer = new MyGrammarLexer(CharStreams.fromPath(new File(file).toPath()));
+		lexer.removeErrorListeners();
+		TokenStream tokens = new CommonTokenStream(lexer);
+		MyGrammarParser parser = new MyGrammarParser(tokens);
+		ParseTree result = parser.program();
+		return result;
 	}
 
 	// --------------------------------------------------------------
@@ -245,6 +286,9 @@ public class Checker extends MyGrammarBaseListener {
 				Token t = ctx.TYPE().getSymbol();
 				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
 						+ ": Left and right hand side of the assignment have to be of the same type");
+			} else if (scope.isInCurrentScope(ctx.ID().getText())) {
+				Token t = ctx.ID().getSymbol();
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable has already been declared in the same scope");
 			} else {
 				scope.addVariable(ctx.ID().getText(), t1);
 			}
@@ -305,9 +349,38 @@ public class Checker extends MyGrammarBaseListener {
 	}
 	
 	// --------------------------------------------------------------
-	// -------------------- statement rule --------------------------
+	// -------------------- statement rules -------------------------
 	// --------------------------------------------------------------
 
-	// TODO entering and closing scopes, maybe when entering and exiting statements?
+	public void enterWhileStat(WhileStatContext ctx) {
+		scope.openScope();
+	}
 	
+	public void exitWhileStat(WhileStatContext ctx) {
+		scope.closeScope();
+	}
+	
+	public void enterForStat(ForStatContext ctx) {
+		scope.openScope();
+	}
+	
+	public void exitForStat(ForStatContext ctx) {
+		scope.closeScope();
+	}
+	
+	public void enterIfStat(IfStatContext ctx) {
+		scope.openScope();
+	}
+	
+	public void exitIfStat(IfStatContext ctx) {
+		scope.closeScope();
+	}
+	
+	public void enterElseStat(ElseStatContext ctx) {
+		scope.openScope();
+	}
+	
+	public void exitElseStat(ElseStatContext ctx) {
+		scope.closeScope();
+	}
 }

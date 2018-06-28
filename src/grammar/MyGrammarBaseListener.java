@@ -41,6 +41,18 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterElseStat(@NotNull MyGrammarParser.ElseStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitElseStat(@NotNull MyGrammarParser.ElseStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTermExpr(@NotNull MyGrammarParser.TermExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
