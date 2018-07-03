@@ -1,0 +1,7 @@
+# comparing different types #
+if (true == 1) {
+    int a = 400
+} else {
+    # a was defined in a different scope that is closed already #
+    a = 400
+}

@@ -1,0 +1,7 @@
+# multiple definitions of a #
+int a = 2
+bool a = true
+
+# assigning wrong type to a variable #
+int b = 3
+b = false
