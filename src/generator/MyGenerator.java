@@ -66,6 +66,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.add("Load (ImmValue " + (Boolean.parseBoolean(ctx.BOOL().getText())?"1":"0") + ") regA");
     	cmds.add("Push regA");
+    	commands.put(ctx, cmds);
     }
 
 }
