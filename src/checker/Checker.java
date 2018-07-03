@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import grammar.*;
+import grammar.MyGrammarParser.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
@@ -12,31 +14,6 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-
-import grammar.MyGrammarBaseListener;
-import grammar.MyGrammarLexer;
-import grammar.MyGrammarParser;
-import grammar.MyGrammarParser.AddExprContext;
-import grammar.MyGrammarParser.ArrayAssignContext;
-import grammar.MyGrammarParser.ArrayDeclAssignContext;
-import grammar.MyGrammarParser.ArrayFactorContext;
-import grammar.MyGrammarParser.BlockContext;
-import grammar.MyGrammarParser.BoolFactorContext;
-import grammar.MyGrammarParser.CharFactorContext;
-import grammar.MyGrammarParser.CompContext;
-import grammar.MyGrammarParser.DeclAssignContext;
-import grammar.MyGrammarParser.ExpExpoContext;
-import grammar.MyGrammarParser.ExpoTermContext;
-import grammar.MyGrammarParser.ExprContext;
-import grammar.MyGrammarParser.FactorExpoContext;
-import grammar.MyGrammarParser.MultTermContext;
-import grammar.MyGrammarParser.NegExprContext;
-import grammar.MyGrammarParser.NegTermContext;
-import grammar.MyGrammarParser.NumFactorContext;
-import grammar.MyGrammarParser.ParFactorContext;
-import grammar.MyGrammarParser.TermExprContext;
-import grammar.MyGrammarParser.VarAssignContext;
-import grammar.MyGrammarParser.VarFactorContext;
 
 public class Checker extends MyGrammarBaseListener {
 	private ParseTreeProperty<Type> types;
