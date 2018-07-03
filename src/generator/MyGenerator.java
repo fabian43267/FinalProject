@@ -16,8 +16,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 public class MyGenerator extends MyGrammarBaseListener {
 
     private ParseTreeProperty<ArrayList<String>> commands = new ParseTreeProperty<>();
-    private HashMap<String, Integer> variables = new HashMap<>();
-    private int r1 = 1, r2 = 2;
+    private HashMap<String, Integer> variables = new HashMap<>(); //variable name and address
     private int addrTop = 0;
 
     @Override
@@ -27,8 +26,8 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void enterDeclAssign(MyGrammarParser.DeclAssignContext ctx) {
         ArrayList<String> cmds = new ArrayList<>();
         variables.put(ctx.ID().getText(), addrTop); // add the variable to the map
-        cmds.add("Load (ImmValue " + ctx.expr() + ") " + r1);
-        cmds.add("Store " + r1 + " (DirAddr " + addrTop + ")");
+        cmds.add("Load (ImmValue " + ctx.expr() + ") regA");
+        cmds.add("Store regA (DirAddr " + addrTop + ")");
         addrTop += 4; //increment the address to make room for the next variable
         commands.put(ctx, cmds);
     }
