@@ -10,7 +10,13 @@ import grammar.MyGrammarParser;
 import grammar.MyGrammarParser.ArrayFactorContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
+import grammar.MyGrammarParser.ExpExpoContext;
+import grammar.MyGrammarParser.ExpoTermContext;
+import grammar.MyGrammarParser.FactorExpoContext;
+import grammar.MyGrammarParser.MultTermContext;
+import grammar.MyGrammarParser.NegTermContext;
 import grammar.MyGrammarParser.NumFactorContext;
+import grammar.MyGrammarParser.ParFactorContext;
 import grammar.MyGrammarParser.ProgramContext;
 import grammar.MyGrammarParser.StatementContext;
 import grammar.MyGrammarParser.VarFactorContext;
@@ -56,6 +62,47 @@ public class MyGenerator extends MyGrammarBaseListener {
     	commands.put(ctx, cmds);
     }
 
+    // ------------------------------------------
+    // -------------- Term ----------------------
+    // ------------------------------------------
+    
+    public void exitMultTerm(MultTermContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	cmds.addAll(commands.get(ctx.expo()));
+    	cmds.addAll(commands.get(ctx.term()));
+    	cmds.add("Pop regA");
+    	cmds.add("Pop regB");
+    	cmds.add("Compute Mul regA regB regA");
+    	cmds.add("Push regA");
+    	commands.put(ctx, cmds);
+    }
+    
+    public void exitNegTerm(NegTermContext ctx) {
+    	// TODO
+    }
+    
+    public void exitExpoTerm(ExpoTermContext ctx) {
+    	commands.put(ctx, commands.get(ctx.expo()));
+    }
+    
+    
+    // ------------------------------------------
+    // -------------- Expo ----------------------
+    // ------------------------------------------
+    
+    public void exitExpExpo(ExpExpoContext ctx) {
+    	// TODO that's gonna be quite nasty...
+    	// maybe a loop that counts down and then multiplying or something
+    }
+    
+    public void exitFactorExpo(FactorExpoContext ctx) {
+    	commands.put(ctx, commands.get(ctx.factor()));
+    }
+    
+    // ------------------------------------------
+    // ------------  Factor ---------------------
+    // ------------------------------------------
+    
     public void exitNumFactor(NumFactorContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.add("Load (ImmValue " + ctx.NUM().getText() + ") regA");
@@ -86,6 +133,10 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.add("Load (ImmValue " + Character.getNumericValue(ctx.CHAR().getText().toCharArray()[1]) + ") regA");
     	cmds.add("Push regA");
     	commands.put(ctx, cmds);
+    }
+    
+    public void exitParFactor(ParFactorContext ctx) {
+    	commands.put(ctx, commands.get(ctx.expr()));
     }
 
 }
