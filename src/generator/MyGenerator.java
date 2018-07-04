@@ -13,18 +13,23 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import grammar.MyGrammarBaseListener;
 import grammar.MyGrammarParser;
+import grammar.MyGrammarParser.AddExprContext;
 import grammar.MyGrammarParser.ArrayFactorContext;
+import grammar.MyGrammarParser.AssignExprContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
+import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
 import grammar.MyGrammarParser.FactorExpoContext;
 import grammar.MyGrammarParser.MultTermContext;
+import grammar.MyGrammarParser.NegExprContext;
 import grammar.MyGrammarParser.NegTermContext;
 import grammar.MyGrammarParser.NumFactorContext;
 import grammar.MyGrammarParser.ParFactorContext;
 import grammar.MyGrammarParser.ProgramContext;
 import grammar.MyGrammarParser.StatementContext;
+import grammar.MyGrammarParser.TermExprContext;
 import grammar.MyGrammarParser.VarFactorContext;
 
 public class MyGenerator extends MyGrammarBaseListener {
@@ -95,7 +100,54 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.add("EndProg");
     	commands.put(ctx, cmds);
     }
+    
+    // ------------------------------------------
+    // -------------- Comp ----------------------
+    // ------------------------------------------
+    
+    public void exitComp(CompContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	cmds.addAll(commands.get(ctx.expr(0)));
+    	cmds.addAll(commands.get(ctx.expr(1)));
+    	cmds.add("Pop regB");
+    	cmds.add("Pop regA");
+    	commands.put(ctx, cmds);
+    }
 
+    // ------------------------------------------
+    // -------------- Expr ----------------------
+    // ------------------------------------------
+    
+    public void exitAddExpr(AddExprContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	cmds.addAll(commands.get(ctx.expr()));
+    	cmds.addAll(commands.get(ctx.term()));
+    	cmds.add("Pop regB");
+    	cmds.add("Pop regA");
+    	cmds.add("Compute Add regA regB regA");
+    	cmds.add("Push regA");
+    	commands.put(ctx, cmds);
+    }
+    
+    public void exitNegExpr(NegExprContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	cmds.addAll(commands.get(ctx.expr()));
+    	cmds.addAll(commands.get(ctx.term()));
+    	cmds.add("Pop regB");
+    	cmds.add("Pop regA");
+    	cmds.add("Compute Sub regA regB regA");
+    	cmds.add("Push regA");
+    	commands.put(ctx, cmds);
+    }
+    
+    public void exitTermExpr(TermExprContext ctx) {
+    	commands.put(ctx, commands.get(ctx.term()));
+    }
+    
+    public void exitAssignExpr(AssignExprContext ctx) {
+    	commands.put(ctx, commands.get(ctx.assignment()));
+    }
+    
     // ------------------------------------------
     // -------------- Term ----------------------
     // ------------------------------------------
@@ -104,8 +156,8 @@ public class MyGenerator extends MyGrammarBaseListener {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.addAll(commands.get(ctx.expo()));
     	cmds.addAll(commands.get(ctx.term()));
-    	cmds.add("Pop regA");
     	cmds.add("Pop regB");
+    	cmds.add("Pop regA");
     	cmds.add("Compute Mul regA regB regA");
     	cmds.add("Push regA");
     	commands.put(ctx, cmds);
