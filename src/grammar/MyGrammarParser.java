@@ -1,17 +1,14 @@
-// Generated from MyGrammar.g4 by ANTLR 4.4
+// Generated from /Users/ducu97/IntelliJProjects/FinalProject/src/grammar/MyGrammar.g4 by ANTLR 4.7
 package grammar;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class MyGrammarParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.4", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -21,12 +18,6 @@ public class MyGrammarParser extends Parser {
 		SQUOTE=11, ASSIGN=12, LBRACE=13, RBRACE=14, LPARENT=15, RPARENT=16, LSQBRAC=17, 
 		RSQBRAC=18, EXP=19, NEG=20, MULT=21, ADD=22, TYPE=23, BOOL=24, ID=25, 
 		NUM=26, CHAR=27, COMP=28, WS=29;
-	public static final String[] tokenNames = {
-		"<INVALID>", "'#'", "'if'", "'else'", "'while'", "'for'", "'fork'", "'join'", 
-		"','", "';'", "'\"'", "'''", "'='", "'{'", "'}'", "'('", "')'", "'['", 
-		"']'", "'^'", "'-'", "'*'", "'+'", "TYPE", "BOOL", "ID", "NUM", "CHAR", 
-		"COMP", "WS"
-	};
 	public static final int
 		RULE_program = 0, RULE_assignment = 1, RULE_statement = 2, RULE_block = 3, 
 		RULE_comment = 4, RULE_comp = 5, RULE_expr = 6, RULE_term = 7, RULE_expo = 8, 
@@ -36,11 +27,52 @@ public class MyGrammarParser extends Parser {
 		"term", "expo", "factor"
 	};
 
-	@Override
-	public String getGrammarFileName() { return "MyGrammar.g4"; }
+	private static final String[] _LITERAL_NAMES = {
+		null, "'#'", "'if'", "'else'", "'while'", "'for'", "'fork'", "'join'", 
+		"','", "';'", "'\"'", "'''", "'='", "'{'", "'}'", "'('", "')'", "'['", 
+		"']'", "'^'", "'-'", "'*'", "'+'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, "IF", "ELSE", "WHILE", "FOR", "FORK", "JOIN", "COMMA", "SC", 
+		"QUOTE", "SQUOTE", "ASSIGN", "LBRACE", "RBRACE", "LPARENT", "RPARENT", 
+		"LSQBRAC", "RSQBRAC", "EXP", "NEG", "MULT", "ADD", "TYPE", "BOOL", "ID", 
+		"NUM", "CHAR", "COMP", "WS"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
 
 	@Override
-	public String[] getTokenNames() { return tokenNames; }
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
+	@Override
+	public String getGrammarFileName() { return "MyGrammar.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -56,11 +88,11 @@ public class MyGrammarParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class ProgramContext extends ParserRuleContext {
-		public StatementContext statement(int i) {
-			return getRuleContext(StatementContext.class,i);
-		}
 		public List<StatementContext> statement() {
 			return getRuleContexts(StatementContext.class);
+		}
+		public StatementContext statement(int i) {
+			return getRuleContext(StatementContext.class,i);
 		}
 		public ProgramContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -89,7 +121,8 @@ public class MyGrammarParser extends Parser {
 			do {
 				{
 				{
-				setState(20); statement();
+				setState(20);
+				statement();
 				}
 				}
 				setState(23); 
@@ -121,12 +154,12 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class DeclAssignContext extends AssignmentContext {
+		public TerminalNode TYPE() { return getToken(MyGrammarParser.TYPE, 0); }
 		public TerminalNode ID() { return getToken(MyGrammarParser.ID, 0); }
 		public TerminalNode ASSIGN() { return getToken(MyGrammarParser.ASSIGN, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode TYPE() { return getToken(MyGrammarParser.TYPE, 0); }
 		public DeclAssignContext(AssignmentContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -138,18 +171,18 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class ArrayDeclAssignContext extends AssignmentContext {
+		public TerminalNode TYPE() { return getToken(MyGrammarParser.TYPE, 0); }
 		public TerminalNode ID() { return getToken(MyGrammarParser.ID, 0); }
 		public TerminalNode ASSIGN() { return getToken(MyGrammarParser.ASSIGN, 0); }
+		public TerminalNode LSQBRAC() { return getToken(MyGrammarParser.LSQBRAC, 0); }
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
 		}
-		public TerminalNode RSQBRAC() { return getToken(MyGrammarParser.RSQBRAC, 0); }
-		public TerminalNode TYPE() { return getToken(MyGrammarParser.TYPE, 0); }
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
+		public TerminalNode RSQBRAC() { return getToken(MyGrammarParser.RSQBRAC, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(MyGrammarParser.COMMA); }
-		public TerminalNode LSQBRAC() { return getToken(MyGrammarParser.LSQBRAC, 0); }
 		public TerminalNode COMMA(int i) {
 			return getToken(MyGrammarParser.COMMA, i);
 		}
@@ -165,15 +198,15 @@ public class MyGrammarParser extends Parser {
 	}
 	public static class ArrayAssignContext extends AssignmentContext {
 		public TerminalNode ID() { return getToken(MyGrammarParser.ID, 0); }
-		public TerminalNode ASSIGN() { return getToken(MyGrammarParser.ASSIGN, 0); }
+		public TerminalNode LSQBRAC() { return getToken(MyGrammarParser.LSQBRAC, 0); }
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
 		}
-		public TerminalNode RSQBRAC() { return getToken(MyGrammarParser.RSQBRAC, 0); }
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode LSQBRAC() { return getToken(MyGrammarParser.LSQBRAC, 0); }
+		public TerminalNode RSQBRAC() { return getToken(MyGrammarParser.RSQBRAC, 0); }
+		public TerminalNode ASSIGN() { return getToken(MyGrammarParser.ASSIGN, 0); }
 		public ArrayAssignContext(AssignmentContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -207,62 +240,84 @@ public class MyGrammarParser extends Parser {
 		int _la;
 		try {
 			setState(53);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				_localctx = new DeclAssignContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(25); match(TYPE);
-				setState(26); match(ID);
-				setState(27); match(ASSIGN);
-				setState(28); expr(0);
+				setState(25);
+				match(TYPE);
+				setState(26);
+				match(ID);
+				setState(27);
+				match(ASSIGN);
+				setState(28);
+				expr(0);
 				}
 				break;
 			case 2:
 				_localctx = new VarAssignContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(29); match(ID);
-				setState(30); match(ASSIGN);
-				setState(31); expr(0);
+				setState(29);
+				match(ID);
+				setState(30);
+				match(ASSIGN);
+				setState(31);
+				expr(0);
 				}
 				break;
 			case 3:
 				_localctx = new ArrayDeclAssignContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(32); match(TYPE);
-				setState(33); match(ID);
-				setState(34); match(ASSIGN);
-				setState(35); match(LSQBRAC);
-				setState(36); expr(0);
+				setState(32);
+				match(TYPE);
+				setState(33);
+				match(ID);
+				setState(34);
+				match(ASSIGN);
+				setState(35);
+				match(LSQBRAC);
+				setState(36);
+				expr(0);
 				setState(41);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(37); match(COMMA);
-					setState(38); expr(0);
+					setState(37);
+					match(COMMA);
+					setState(38);
+					expr(0);
 					}
 					}
 					setState(43);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(44); match(RSQBRAC);
+				setState(44);
+				match(RSQBRAC);
 				}
 				break;
 			case 4:
 				_localctx = new ArrayAssignContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(46); match(ID);
-				setState(47); match(LSQBRAC);
-				setState(48); expr(0);
-				setState(49); match(RSQBRAC);
-				setState(50); match(ASSIGN);
-				setState(51); expr(0);
+				setState(46);
+				match(ID);
+				setState(47);
+				match(LSQBRAC);
+				setState(48);
+				expr(0);
+				setState(49);
+				match(RSQBRAC);
+				setState(50);
+				match(ASSIGN);
+				setState(51);
+				expr(0);
 				}
 				break;
 			}
@@ -290,19 +345,19 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class IfStatContext extends StatementContext {
-		public TerminalNode ELSE() { return getToken(MyGrammarParser.ELSE, 0); }
 		public TerminalNode IF() { return getToken(MyGrammarParser.IF, 0); }
 		public TerminalNode LPARENT() { return getToken(MyGrammarParser.LPARENT, 0); }
-		public BlockContext block(int i) {
-			return getRuleContext(BlockContext.class,i);
-		}
-		public TerminalNode RPARENT() { return getToken(MyGrammarParser.RPARENT, 0); }
 		public CompContext comp() {
 			return getRuleContext(CompContext.class,0);
 		}
+		public TerminalNode RPARENT() { return getToken(MyGrammarParser.RPARENT, 0); }
 		public List<BlockContext> block() {
 			return getRuleContexts(BlockContext.class);
 		}
+		public BlockContext block(int i) {
+			return getRuleContext(BlockContext.class,i);
+		}
+		public TerminalNode ELSE() { return getToken(MyGrammarParser.ELSE, 0); }
 		public IfStatContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -369,25 +424,25 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class ForStatContext extends StatementContext {
+		public TerminalNode FOR() { return getToken(MyGrammarParser.FOR, 0); }
 		public TerminalNode LPARENT() { return getToken(MyGrammarParser.LPARENT, 0); }
 		public AssignmentContext assignment() {
 			return getRuleContext(AssignmentContext.class,0);
 		}
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
-		}
-		public TerminalNode FOR() { return getToken(MyGrammarParser.FOR, 0); }
+		public List<TerminalNode> SC() { return getTokens(MyGrammarParser.SC); }
 		public TerminalNode SC(int i) {
 			return getToken(MyGrammarParser.SC, i);
 		}
-		public TerminalNode RPARENT() { return getToken(MyGrammarParser.RPARENT, 0); }
 		public CompContext comp() {
 			return getRuleContext(CompContext.class,0);
 		}
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public TerminalNode RPARENT() { return getToken(MyGrammarParser.RPARENT, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
-		public List<TerminalNode> SC() { return getTokens(MyGrammarParser.SC); }
 		public ForStatContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -399,12 +454,12 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class WhileStatContext extends StatementContext {
+		public TerminalNode WHILE() { return getToken(MyGrammarParser.WHILE, 0); }
 		public TerminalNode LPARENT() { return getToken(MyGrammarParser.LPARENT, 0); }
-		public TerminalNode RPARENT() { return getToken(MyGrammarParser.RPARENT, 0); }
 		public CompContext comp() {
 			return getRuleContext(CompContext.class,0);
 		}
-		public TerminalNode WHILE() { return getToken(MyGrammarParser.WHILE, 0); }
+		public TerminalNode RPARENT() { return getToken(MyGrammarParser.RPARENT, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
@@ -425,22 +480,31 @@ public class MyGrammarParser extends Parser {
 		int _la;
 		try {
 			setState(85);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IF:
 				_localctx = new IfStatContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(55); match(IF);
-				setState(56); match(LPARENT);
-				setState(57); comp();
-				setState(58); match(RPARENT);
-				setState(59); block();
+				setState(55);
+				match(IF);
+				setState(56);
+				match(LPARENT);
+				setState(57);
+				comp();
+				setState(58);
+				match(RPARENT);
+				setState(59);
+				block();
 				setState(62);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ELSE) {
 					{
-					setState(60); match(ELSE);
-					setState(61); block();
+					setState(60);
+					match(ELSE);
+					setState(61);
+					block();
 					}
 				}
 
@@ -450,41 +514,58 @@ public class MyGrammarParser extends Parser {
 				_localctx = new WhileStatContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(64); match(WHILE);
-				setState(65); match(LPARENT);
-				setState(66); comp();
-				setState(67); match(RPARENT);
-				setState(68); block();
+				setState(64);
+				match(WHILE);
+				setState(65);
+				match(LPARENT);
+				setState(66);
+				comp();
+				setState(67);
+				match(RPARENT);
+				setState(68);
+				block();
 				}
 				break;
 			case FOR:
 				_localctx = new ForStatContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(70); match(FOR);
-				setState(71); match(LPARENT);
-				setState(72); assignment();
-				setState(73); match(SC);
-				setState(74); comp();
-				setState(75); match(SC);
-				setState(76); expr(0);
-				setState(77); match(RPARENT);
-				setState(78); block();
+				setState(70);
+				match(FOR);
+				setState(71);
+				match(LPARENT);
+				setState(72);
+				assignment();
+				setState(73);
+				match(SC);
+				setState(74);
+				comp();
+				setState(75);
+				match(SC);
+				setState(76);
+				expr(0);
+				setState(77);
+				match(RPARENT);
+				setState(78);
+				block();
 				}
 				break;
 			case FORK:
 				_localctx = new ForkStatContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(80); match(FORK);
-				setState(81); block();
+				setState(80);
+				match(FORK);
+				setState(81);
+				block();
 				}
 				break;
 			case JOIN:
 				_localctx = new JoinStatContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(82); match(JOIN);
+				setState(82);
+				match(JOIN);
 				}
 				break;
 			case LPARENT:
@@ -497,14 +578,16 @@ public class MyGrammarParser extends Parser {
 				_localctx = new ExprStatContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(83); expr(0);
+				setState(83);
+				expr(0);
 				}
 				break;
 			case T__0:
 				_localctx = new CommentStatContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(84); comment();
+				setState(84);
+				comment();
 				}
 				break;
 			default:
@@ -523,13 +606,13 @@ public class MyGrammarParser extends Parser {
 	}
 
 	public static class BlockContext extends ParserRuleContext {
-		public TerminalNode RBRACE() { return getToken(MyGrammarParser.RBRACE, 0); }
 		public TerminalNode LBRACE() { return getToken(MyGrammarParser.LBRACE, 0); }
-		public StatementContext statement(int i) {
-			return getRuleContext(StatementContext.class,i);
-		}
+		public TerminalNode RBRACE() { return getToken(MyGrammarParser.RBRACE, 0); }
 		public List<StatementContext> statement() {
 			return getRuleContexts(StatementContext.class);
+		}
+		public StatementContext statement(int i) {
+			return getRuleContext(StatementContext.class,i);
 		}
 		public BlockContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -552,21 +635,24 @@ public class MyGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(87); match(LBRACE);
+			setState(87);
+			match(LBRACE);
 			setState(89); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(88); statement();
+				setState(88);
+				statement();
 				}
 				}
 				setState(91); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << IF) | (1L << WHILE) | (1L << FOR) | (1L << FORK) | (1L << JOIN) | (1L << LPARENT) | (1L << NEG) | (1L << TYPE) | (1L << BOOL) | (1L << ID) | (1L << NUM) | (1L << CHAR))) != 0) );
-			setState(93); match(RBRACE);
+			setState(93);
+			match(RBRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -602,7 +688,8 @@ public class MyGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(95); match(T__0);
+			setState(95);
+			match(T__0);
 			setState(99);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -614,14 +701,19 @@ public class MyGrammarParser extends Parser {
 				if ( _la <= 0 || (_la==T__0) ) {
 				_errHandler.recoverInline(this);
 				}
-				consume();
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 				}
 				}
 				setState(101);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(102); match(T__0);
+			setState(102);
+			match(T__0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -663,9 +755,12 @@ public class MyGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104); expr(0);
-			setState(105); match(COMP);
-			setState(106); expr(0);
+			setState(104);
+			expr(0);
+			setState(105);
+			match(COMP);
+			setState(106);
+			expr(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -694,10 +789,10 @@ public class MyGrammarParser extends Parser {
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
+		public TerminalNode ADD() { return getToken(MyGrammarParser.ADD, 0); }
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
-		public TerminalNode ADD() { return getToken(MyGrammarParser.ADD, 0); }
 		public AddExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -723,10 +818,10 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class NegExprContext extends ExprContext {
-		public TerminalNode NEG() { return getToken(MyGrammarParser.NEG, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
+		public TerminalNode NEG() { return getToken(MyGrammarParser.NEG, 0); }
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
@@ -771,6 +866,7 @@ public class MyGrammarParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(111);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				{
@@ -778,7 +874,8 @@ public class MyGrammarParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(109); term();
+				setState(109);
+				term();
 				}
 				break;
 			case 2:
@@ -786,7 +883,8 @@ public class MyGrammarParser extends Parser {
 				_localctx = new AssignExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(110); assignment();
+				setState(110);
+				assignment();
 				}
 				break;
 			}
@@ -800,6 +898,7 @@ public class MyGrammarParser extends Parser {
 					_prevctx = _localctx;
 					{
 					setState(119);
+					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 					case 1:
 						{
@@ -807,8 +906,10 @@ public class MyGrammarParser extends Parser {
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(113);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(114); match(ADD);
-						setState(115); term();
+						setState(114);
+						match(ADD);
+						setState(115);
+						term();
 						}
 						break;
 					case 2:
@@ -817,8 +918,10 @@ public class MyGrammarParser extends Parser {
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(116);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(117); match(NEG);
-						setState(118); term();
+						setState(117);
+						match(NEG);
+						setState(118);
+						term();
 						}
 						break;
 					}
@@ -853,12 +956,12 @@ public class MyGrammarParser extends Parser {
 		}
 	}
 	public static class MultTermContext extends TermContext {
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
-		}
-		public TerminalNode MULT() { return getToken(MyGrammarParser.MULT, 0); }
 		public ExpoContext expo() {
 			return getRuleContext(ExpoContext.class,0);
+		}
+		public TerminalNode MULT() { return getToken(MyGrammarParser.MULT, 0); }
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
 		}
 		public MultTermContext(TermContext ctx) { copyFrom(ctx); }
 		@Override
@@ -905,29 +1008,36 @@ public class MyGrammarParser extends Parser {
 		enterRule(_localctx, 14, RULE_term);
 		try {
 			setState(131);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 			case 1:
 				_localctx = new MultTermContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(124); expo();
-				setState(125); match(MULT);
-				setState(126); term();
+				setState(124);
+				expo();
+				setState(125);
+				match(MULT);
+				setState(126);
+				term();
 				}
 				break;
 			case 2:
 				_localctx = new NegTermContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(128); match(NEG);
-				setState(129); term();
+				setState(128);
+				match(NEG);
+				setState(129);
+				term();
 				}
 				break;
 			case 3:
 				_localctx = new ExpoTermContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(130); expo();
+				setState(130);
+				expo();
 				}
 				break;
 			}
@@ -992,21 +1102,26 @@ public class MyGrammarParser extends Parser {
 		enterRule(_localctx, 16, RULE_expo);
 		try {
 			setState(138);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
 			case 1:
 				_localctx = new ExpExpoContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(133); factor();
-				setState(134); match(EXP);
-				setState(135); expo();
+				setState(133);
+				factor();
+				setState(134);
+				match(EXP);
+				setState(135);
+				expo();
 				}
 				break;
 			case 2:
 				_localctx = new FactorExpoContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(137); factor();
+				setState(137);
+				factor();
 				}
 				break;
 			}
@@ -1087,11 +1202,11 @@ public class MyGrammarParser extends Parser {
 	}
 	public static class ArrayFactorContext extends FactorContext {
 		public TerminalNode ID() { return getToken(MyGrammarParser.ID, 0); }
+		public TerminalNode LSQBRAC() { return getToken(MyGrammarParser.LSQBRAC, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
 		public TerminalNode RSQBRAC() { return getToken(MyGrammarParser.RSQBRAC, 0); }
-		public TerminalNode LSQBRAC() { return getToken(MyGrammarParser.LSQBRAC, 0); }
 		public ArrayFactorContext(FactorContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -1120,52 +1235,64 @@ public class MyGrammarParser extends Parser {
 		enterRule(_localctx, 18, RULE_factor);
 		try {
 			setState(153);
+			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
 			case 1:
 				_localctx = new NumFactorContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(140); match(NUM);
+				setState(140);
+				match(NUM);
 				}
 				break;
 			case 2:
 				_localctx = new BoolFactorContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(141); match(BOOL);
+				setState(141);
+				match(BOOL);
 				}
 				break;
 			case 3:
 				_localctx = new VarFactorContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(142); match(ID);
+				setState(142);
+				match(ID);
 				}
 				break;
 			case 4:
 				_localctx = new ArrayFactorContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(143); match(ID);
-				setState(144); match(LSQBRAC);
-				setState(145); expr(0);
-				setState(146); match(RSQBRAC);
+				setState(143);
+				match(ID);
+				setState(144);
+				match(LSQBRAC);
+				setState(145);
+				expr(0);
+				setState(146);
+				match(RSQBRAC);
 				}
 				break;
 			case 5:
 				_localctx = new CharFactorContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(148); match(CHAR);
+				setState(148);
+				match(CHAR);
 				}
 				break;
 			case 6:
 				_localctx = new ParFactorContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(149); match(LPARENT);
-				setState(150); expr(0);
-				setState(151); match(RPARENT);
+				setState(149);
+				match(LPARENT);
+				setState(150);
+				expr(0);
+				setState(151);
+				match(RPARENT);
 				}
 				break;
 			}
@@ -1183,20 +1310,23 @@ public class MyGrammarParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 6: return expr_sempred((ExprContext)_localctx, predIndex);
+		case 6:
+			return expr_sempred((ExprContext)_localctx, predIndex);
 		}
 		return true;
 	}
 	private boolean expr_sempred(ExprContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0: return precpred(_ctx, 4);
-		case 1: return precpred(_ctx, 3);
+		case 0:
+			return precpred(_ctx, 4);
+		case 1:
+			return precpred(_ctx, 3);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\37\u009e\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\37\u009e\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\3\2\6\2\30\n\2\r\2\16\2\31\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\7\3*\n\3\f\3\16\3-\13\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
@@ -1207,8 +1337,8 @@ public class MyGrammarParser extends Parser {
 		"\b\3\b\7\bz\n\b\f\b\16\b}\13\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u0086\n"+
 		"\t\3\n\3\n\3\n\3\n\3\n\5\n\u008d\n\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13"+
 		"\3\13\3\13\3\13\3\13\3\13\3\13\5\13\u009c\n\13\3\13\2\3\16\f\2\4\6\b\n"+
-		"\f\16\20\22\24\2\3\3\2\3\3\u00ac\2\27\3\2\2\2\4\67\3\2\2\2\6W\3\2\2\2"+
-		"\bY\3\2\2\2\na\3\2\2\2\fj\3\2\2\2\16q\3\2\2\2\20\u0085\3\2\2\2\22\u008c"+
+		"\f\16\20\22\24\2\3\3\2\3\3\2\u00ac\2\27\3\2\2\2\4\67\3\2\2\2\6W\3\2\2"+
+		"\2\bY\3\2\2\2\na\3\2\2\2\fj\3\2\2\2\16q\3\2\2\2\20\u0085\3\2\2\2\22\u008c"+
 		"\3\2\2\2\24\u009b\3\2\2\2\26\30\5\6\4\2\27\26\3\2\2\2\30\31\3\2\2\2\31"+
 		"\27\3\2\2\2\31\32\3\2\2\2\32\3\3\2\2\2\33\34\7\31\2\2\34\35\7\33\2\2\35"+
 		"\36\7\16\2\2\368\5\16\b\2\37 \7\33\2\2 !\7\16\2\2!8\5\16\b\2\"#\7\31\2"+

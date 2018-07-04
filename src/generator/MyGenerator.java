@@ -1,19 +1,28 @@
 package generator;
 
+import checker.Checker;
 import checker.Scope;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import grammar.MyGrammarLexer;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import grammar.MyGrammarBaseListener;
 import grammar.MyGrammarParser;
 import grammar.MyGrammarParser.*;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 
 public class MyGenerator extends MyGrammarBaseListener {
@@ -36,31 +45,24 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void enterProgram(MyGrammarParser.ProgramContext ctx) { }
 
     @Override
-    public void enterDeclAssign(MyGrammarParser.DeclAssignContext ctx) {
+    public void exitDeclAssign(MyGrammarParser.DeclAssignContext ctx) {
         ArrayList<String> cmds = new ArrayList<>();
         variables.put(ctx.ID().getText(), addrTop); // add the variable to the map
-
-        if (ctx.TYPE().getText().equals("bool")) {
-            if (ctx.expr().getText().equals("true")) {
-                cmds.add("Load (ImmValue " + 1 + ") regA");
-            } else {
-                cmds.add("Load (ImmValue " + 0 + ") regA");
-            }
-        } else if (ctx.TYPE().getText().equals("char")) {
-            cmds.add("Load (ImmValue " + (int) ctx.expr().getText().charAt(1) + ") regA");
-        } else {
-            cmds.add("Load (ImmValue " + ctx.expr() + ") regA");
-        }
-
+        cmds.addAll(commands.get(ctx.expr()));
+        cmds.add("Pop regA");
 
         cmds.add("Store regA (DirAddr " + addrTop + ")");
-        addrTop += 4; //increment the address to make room for the next variable
+        addrTop += 1; //increment the address to make room for the next variable
         commands.put(ctx, cmds);
     }
 
-    @Override public void enterVarAssign(MyGrammarParser.VarAssignContext ctx) {
+    @Override public void exitVarAssign(MyGrammarParser.VarAssignContext ctx) {
         ArrayList<String> cmds = new ArrayList<>();
+        cmds.addAll(commands.get(ctx.expr()));
+        cmds.add("Pop regA");
+        cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
         variables.put(ctx.ID().getText(), addrTop);
+        commands.put(ctx, cmds);
     }
 
     // ------------------------------------------
@@ -318,21 +320,45 @@ public class MyGenerator extends MyGrammarBaseListener {
 
     // returns te contents of the haskell file as a string, given the commands it has generated before
     public String buildHaskellFileContents() {
-        StringBuilder sBuilder = new StringBuilder("import Sprockell\n\nprog :: [Instruction]\nprog = [");
-        cmdsList = new ArrayList<>(); // to be removed when actually generated
+        StringBuilder sBuilder = new StringBuilder("import Sprockell\n\nprog :: [Instruction]\nprog = [ ");
+        //cmdsList = new ArrayList<>(); // to be removed when actually generated
         for (int i = 0; i < cmdsList.size()-1; i++) {
-    		sBuilder.append(cmdsList.get(i)).append(",\n");
+    		sBuilder.append(cmdsList.get(i)).append("\n       , ");
     	}
         String s = sBuilder.toString();
-        //s += cmdsList.get(cmdsList.size()-1); // to be uncommented wen actually generated
-        s += "]\n\nmain = run [prog]\n";
+        s += cmdsList.get(cmdsList.size()-1); // to be uncommented wen actually generated
+        s += "\n       ]\n\nmain = run [prog]\n";
     	return s;
     }
 
     public static void main(String[] args) {
+        String dir = "/Users/ducu97/IntelliJProjects/FinalProject/src/test/sample_progs/";
         MyGenerator gen = new MyGenerator();
-        gen.init();
-        gen.writeToFile();
+        Path progPath = new File(dir + args[0]).toPath();
+        Lexer lexer = null;
+        try {
+            lexer = new MyGrammarLexer(CharStreams.fromPath(progPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        lexer.removeErrorListeners();
+        TokenStream tokens = new CommonTokenStream(lexer);
+        MyGrammarParser parser = new MyGrammarParser(tokens);
+        ParseTree tree = parser.program();
+
+        Checker checker = new Checker();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(checker, tree);
+
+        if (checker.getErrors().isEmpty()) {
+            gen.init();
+            walker.walk(gen, tree);
+            gen.writeToFile();
+        }
     }
 
 }
+/*
+       , Load (DirAddr 0) regA
+       , WriteInstr regA numberIO
+*/
