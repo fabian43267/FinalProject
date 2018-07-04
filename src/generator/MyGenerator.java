@@ -100,9 +100,10 @@ public class MyGenerator extends MyGrammarBaseListener {
     @Override
     public void exitIfStat(IfStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
-
-
-
+    	cmds.addAll(commands.get(ctx.comp()));
+    	cmds.add("Branch regC (Rel 1)");
+    	//cmds.add("Jump );
+    	
     	commands.put(ctx, cmds);
     }
 
@@ -111,12 +112,18 @@ public class MyGenerator extends MyGrammarBaseListener {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.addAll(commands.get(ctx.block()));
     	cmds.addAll(commands.get(ctx.comp()));
+    	cmds.add("Branch regC (Rel -" + String.valueOf(cmds.size()) + ")");
     	commands.put(ctx, cmds);
     }
 
     @Override
     public void exitForStat(ForStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
+    	cmds.addAll(commands.get(ctx.assignment()));
+    	cmds.addAll(commands.get(ctx.block()));
+    	cmds.addAll(commands.get(ctx.expr()));
+    	cmds.addAll(commands.get(ctx.comp()));
+    	cmds.add("Branch regC (Rel -" + String.valueOf(cmds.size() - commands.get(ctx.assignment()).size()) + ")");
     	commands.put(ctx, cmds);
     }
 
@@ -165,7 +172,21 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.addAll(commands.get(ctx.expr(1)));
     	cmds.add("Pop regB");
     	cmds.add("Pop regA");
-    	// TODO add actual comparison
+    	String cmp = "", op = ctx.COMP().getText();
+    	if (op.equals("==")) {
+    		cmp = "Equal";
+    	} else if (op.equals("<=")) {
+    		cmp = "LtE";
+    	} else if (op.equals(">=")) {
+    		cmp = "GtE";
+    	} else if (op.equals("!=")) {
+    		cmp = "NEq";
+    	} else if (op.equals(">")) {
+    		cmp = "Gt";
+    	} else if (op.equals("<")) {
+    		cmp = "Lt";
+    	}
+    	cmds.add("Compute " + cmp + " regA regB regC");
     	commands.put(ctx, cmds);
     }
 
