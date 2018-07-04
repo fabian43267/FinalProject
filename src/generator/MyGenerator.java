@@ -13,35 +13,13 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import grammar.MyGrammarBaseListener;
 import grammar.MyGrammarParser;
-import grammar.MyGrammarParser.AddExprContext;
-import grammar.MyGrammarParser.ArrayFactorContext;
-import grammar.MyGrammarParser.AssignExprContext;
-import grammar.MyGrammarParser.BlockContext;
-import grammar.MyGrammarParser.BoolFactorContext;
-import grammar.MyGrammarParser.CharFactorContext;
-import grammar.MyGrammarParser.CompContext;
-import grammar.MyGrammarParser.ExpExpoContext;
-import grammar.MyGrammarParser.ExpoTermContext;
-import grammar.MyGrammarParser.ExprStatContext;
-import grammar.MyGrammarParser.FactorExpoContext;
-import grammar.MyGrammarParser.ForStatContext;
-import grammar.MyGrammarParser.ForkStatContext;
-import grammar.MyGrammarParser.IfStatContext;
-import grammar.MyGrammarParser.JoinStatContext;
-import grammar.MyGrammarParser.MultTermContext;
-import grammar.MyGrammarParser.NegExprContext;
-import grammar.MyGrammarParser.NegTermContext;
-import grammar.MyGrammarParser.NumFactorContext;
-import grammar.MyGrammarParser.ParFactorContext;
-import grammar.MyGrammarParser.ProgramContext;
-import grammar.MyGrammarParser.StatementContext;
-import grammar.MyGrammarParser.TermExprContext;
-import grammar.MyGrammarParser.VarFactorContext;
-import grammar.MyGrammarParser.WhileStatContext;
+import grammar.MyGrammarParser.*;
+
 
 public class MyGenerator extends MyGrammarBaseListener {
 
     private ParseTreeProperty<ArrayList<String>> commands;
+    private ArrayList<String> cmdsList;
     private HashMap<String, Integer> variables; //variable name and address
     private int addrTop;
     private Scope scope;
@@ -97,13 +75,14 @@ public class MyGenerator extends MyGrammarBaseListener {
     	s += commands.get(commands.size()-1) + "]\n\nmain = run [prog]\n";
     	return s;
     }
-    
+
     */
 
     // ------------------------------------------
     // ------------- Program --------------------
     // ------------------------------------------
-    
+
+    @Override
     public void exitProgram(ProgramContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	for (StatementContext bla : ctx.statement()) {
@@ -111,51 +90,60 @@ public class MyGenerator extends MyGrammarBaseListener {
     	}
     	cmds.add("EndProg");
     	commands.put(ctx, cmds);
+        cmdsList = cmds;
     }
     
     // ------------------------------------------
     // ------------- Statement ------------------
     // ------------------------------------------
-    
+
+    @Override
     public void exitIfStat(IfStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
-    	
-    	
-    	
+
+
+
     	commands.put(ctx, cmds);
     }
-    
+
+    @Override
     public void exitWhileStat(WhileStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
-    	
+
     	commands.put(ctx, cmds);
     }
-    
+
+    @Override
     public void exitForStat(ForStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	commands.put(ctx, cmds);
     }
-    
+
+    @Override
     public void exitForkStat(ForkStatContext ctx) {
     	// TODO
     }
-    
+
+    @Override
     public void exitJoinStat(JoinStatContext ctx) {
     	// TODO
     }
-    
+
+    @Override
     public void exitExprStat(ExprStatContext ctx) {
     	commands.put(ctx, commands.get(ctx.expr()));
     }
-    
+
     // ------------------------------------------
     // --------------- Block --------------------
     // ------------------------------------------
-    
+
+    @Override
     public void enterBlock(BlockContext ctx) {
     	scope.openScope();
     }
-    
+
+    @Override
     public void exitBlock(BlockContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	for (StatementContext bla : ctx.statement()) {
@@ -164,11 +152,12 @@ public class MyGenerator extends MyGrammarBaseListener {
     	commands.put(ctx, cmds);
     	scope.closeScope();
     }
-    
+
     // ------------------------------------------
     // --------------- Comp ---------------------
     // ------------------------------------------
-    
+
+
     public void exitComp(CompContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.addAll(commands.get(ctx.expr(0)));
@@ -212,7 +201,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void exitAssignExpr(AssignExprContext ctx) {
     	commands.put(ctx, commands.get(ctx.assignment()));
     }
-    
+
     // ------------------------------------------
     // -------------- Term ----------------------
     // ------------------------------------------
@@ -289,7 +278,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void exitParFactor(ParFactorContext ctx) {
     	commands.put(ctx, commands.get(ctx.expr()));
     }
-    
+
     public void init() {
         file = new File("myProgram.hs");
         try {
@@ -305,18 +294,24 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void writeToFile() {
         try {
             BufferedWriter wrt = new BufferedWriter(new FileWriter(file, true));
-            wrt.write("import Sprockell\n\n");
-            wrt.write("prog :: [Instruction]\n");
-            wrt.write("prog = [\n");
-                //insert elements from command one by one with a comma in front in here
-            wrt.write(", EndProg\n");
-            wrt.write("]\n\n");
-            wrt.write("-- hi mum\n");
-            wrt.write("main = run [prog]\n");
+            wrt.write(buildHaskellFile());
             wrt.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // returns a haskell file as a string, given the commands it has generated before
+    public String buildHaskellFile() {
+        StringBuilder sBuilder = new StringBuilder("import Sprockell\n\nprog :: [Instruction]\nprog = [");
+        cmdsList = new ArrayList<>(); // to be removed when actually generated
+        for (int i = 0; i < cmdsList.size()-1; i++) {
+    		sBuilder.append(cmdsList.get(i)).append(",\n");
+    	}
+        String s = sBuilder.toString();
+        //s += cmdsList.get(cmdsList.size()-1); // to be uncommented wen actually generated
+        s += "]\n\nmain = run [prog]\n";
+    	return s;
     }
 
     public static void main(String[] args) {
