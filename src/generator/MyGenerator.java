@@ -93,6 +93,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.addAll(commands.get(ctx.block(0)));
     	
     	if (ctx.block().size() == 2) {
+    		cmds.add("Jump (Rel " + (commands.get(ctx.block(1)).size() + 1) + ")");
     		cmds.addAll(commands.get(ctx.block(1)));
     	}
     	
