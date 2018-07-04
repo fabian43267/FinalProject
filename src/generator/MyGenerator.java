@@ -45,7 +45,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void enterProgram(MyGrammarParser.ProgramContext ctx) { }
 
     @Override
-    public void exitDeclAssign(MyGrammarParser.DeclAssignContext ctx) {
+    public void exitDeclAssign(DeclAssignContext ctx) {
         ArrayList<String> cmds = new ArrayList<>();
         variables.put(ctx.ID().getText(), addrTop); // add the variable to the map
         cmds.addAll(commands.get(ctx.expr()));
@@ -56,12 +56,11 @@ public class MyGenerator extends MyGrammarBaseListener {
         commands.put(ctx, cmds);
     }
 
-    @Override public void exitVarAssign(MyGrammarParser.VarAssignContext ctx) {
+    @Override public void exitVarAssign(VarAssignContext ctx) {
         ArrayList<String> cmds = new ArrayList<>();
         cmds.addAll(commands.get(ctx.expr()));
         cmds.add("Pop regA");
         cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
-        variables.put(ctx.ID().getText(), addrTop);
         commands.put(ctx, cmds);
     }
 
