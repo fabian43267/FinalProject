@@ -63,21 +63,6 @@ public class MyGenerator extends MyGrammarBaseListener {
         variables.put(ctx.ID().getText(), addrTop);
     }
 
-
-
-    // returns a haskell file as a string, given the commands it has generated before
-    /*
-    public String buildHaskellFile() {
-    	String s = "import Sprockell\nprog = [";
-    	for (int i = 0; i < commands..size()-1; i++) {
-    		s += commands.get(i) + ",\n";
-    	}
-    	s += commands.get(commands.size()-1) + "]\n\nmain = run [prog]\n";
-    	return s;
-    }
-
-    */
-
     // ------------------------------------------
     // ------------- Program --------------------
     // ------------------------------------------
@@ -316,15 +301,15 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void writeToFile() {
         try {
             BufferedWriter wrt = new BufferedWriter(new FileWriter(file, true));
-            wrt.write(buildHaskellFile());
+            wrt.write(buildHaskellFileContents());
             wrt.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // returns a haskell file as a string, given the commands it has generated before
-    public String buildHaskellFile() {
+    // returns te contents of the haskell file as a string, given the commands it has generated before
+    public String buildHaskellFileContents() {
         StringBuilder sBuilder = new StringBuilder("import Sprockell\n\nprog :: [Instruction]\nprog = [");
         cmdsList = new ArrayList<>(); // to be removed when actually generated
         for (int i = 0; i < cmdsList.size()-1; i++) {
