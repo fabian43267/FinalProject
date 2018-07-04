@@ -94,7 +94,8 @@ public class MyGenerator extends MyGrammarBaseListener {
     @Override
     public void exitWhileStat(WhileStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
-
+    	cmds.addAll(commands.get(ctx.block()));
+    	cmds.addAll(commands.get(ctx.comp()));
     	commands.put(ctx, cmds);
     }
 
