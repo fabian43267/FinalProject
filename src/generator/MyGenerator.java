@@ -29,11 +29,18 @@ import grammar.MyGrammarParser.VarFactorContext;
 
 public class MyGenerator extends MyGrammarBaseListener {
 
-    private ParseTreeProperty<ArrayList<String>> commands = new ParseTreeProperty<>();
-    private HashMap<String, Integer> variables = new HashMap<>(); //variable name and address
-    private int addrTop = 0;
-    private Scope scope = new Scope();
+    private ParseTreeProperty<ArrayList<String>> commands;
+    private HashMap<String, Integer> variables; //variable name and address
+    private int addrTop;
+    private Scope scope;
     private File file;
+
+    public MyGenerator() {
+        commands = new ParseTreeProperty<>();
+        variables = new HashMap<>();
+        addrTop = 0;
+        scope = new Scope();
+    }
 
     @Override
     public void enterProgram(MyGrammarParser.ProgramContext ctx) { }
@@ -193,6 +200,12 @@ public class MyGenerator extends MyGrammarBaseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        MyGenerator gen = new MyGenerator();
+        gen.init();
+        gen.writeToFile();
     }
 
 }
