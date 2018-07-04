@@ -87,7 +87,8 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void exitIfStat(IfStatContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.addAll(commands.get(ctx.comp()));
-    	
+    	cmds.add("Load (ImmValue 0) regA");
+    	cmds.add("Compute Equal regA");
     	cmds.add("Branch regC (Rel 2)");
     	cmds.add("Jump (Rel " + String.valueOf(commands.get(ctx.block(0))) + ")");
     	
@@ -117,7 +118,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.add("Branch regC (Rel " + String.valueOf(commands.get(ctx.block()).size() + commands.get(ctx.expr()).size() + 2) + ")");
     	cmds.addAll(commands.get(ctx.block()));
     	cmds.addAll(commands.get(ctx.expr()));
-    	cmds.add("Jump (Rel (-" + String.valueOf(cmds.size()) + "))");
+    	cmds.add("Jump (Rel (-" + String.valueOf(cmds.size() - commands.get(ctx.assignment()).size() - commands.get(ctx.comp()).size()) + "))");
     	commands.put(ctx, cmds);
     }
 
