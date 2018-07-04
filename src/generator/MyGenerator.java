@@ -98,7 +98,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     	ArrayList<String> cmds = new ArrayList<>();
     	cmds.addAll(commands.get(ctx.comp()));
     	cmds.add("Load (ImmValue 0) regA");
-    	cmds.add("Calculate Equal regA regC regC");
+    	cmds.add("Compute Equal regA regC regC");
     	cmds.add("Branch regC (Rel " + String.valueOf(commands.get(ctx.block()).size() + 2) + ")");
     	cmds.addAll(commands.get(ctx.block()));
     	cmds.add("Jump (Rel -" + String.valueOf(cmds.size()) + ")");
