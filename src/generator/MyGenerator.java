@@ -16,12 +16,18 @@ import grammar.MyGrammarParser;
 import grammar.MyGrammarParser.AddExprContext;
 import grammar.MyGrammarParser.ArrayFactorContext;
 import grammar.MyGrammarParser.AssignExprContext;
+import grammar.MyGrammarParser.BlockContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
+import grammar.MyGrammarParser.ExprStatContext;
 import grammar.MyGrammarParser.FactorExpoContext;
+import grammar.MyGrammarParser.ForStatContext;
+import grammar.MyGrammarParser.ForkStatContext;
+import grammar.MyGrammarParser.IfStatContext;
+import grammar.MyGrammarParser.JoinStatContext;
 import grammar.MyGrammarParser.MultTermContext;
 import grammar.MyGrammarParser.NegExprContext;
 import grammar.MyGrammarParser.NegTermContext;
@@ -31,6 +37,7 @@ import grammar.MyGrammarParser.ProgramContext;
 import grammar.MyGrammarParser.StatementContext;
 import grammar.MyGrammarParser.TermExprContext;
 import grammar.MyGrammarParser.VarFactorContext;
+import grammar.MyGrammarParser.WhileStatContext;
 
 public class MyGenerator extends MyGrammarBaseListener {
 
@@ -83,8 +90,13 @@ public class MyGenerator extends MyGrammarBaseListener {
     	s += commands.get(commands.size()-1) + "]\n\nmain = run [prog]\n";
     	return s;
     }
+    
     */
 
+    // ------------------------------------------
+    // ------------- Program --------------------
+    // ------------------------------------------
+    
     public void exitProgram(ProgramContext ctx) {
     	ArrayList<String> cmds = new ArrayList<>();
     	for (StatementContext bla : ctx.statement()) {
@@ -95,7 +107,59 @@ public class MyGenerator extends MyGrammarBaseListener {
     }
     
     // ------------------------------------------
-    // -------------- Comp ----------------------
+    // ------------- Statement ------------------
+    // ------------------------------------------
+    
+    public void exitIfStat(IfStatContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	
+    	
+    	
+    	commands.put(ctx, cmds);
+    }
+    
+    public void exitWhileStat(WhileStatContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	
+    	commands.put(ctx, cmds);
+    }
+    
+    public void exitForStat(ForStatContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	commands.put(ctx, cmds);
+    }
+    
+    public void exitForkStat(ForkStatContext ctx) {
+    	// TODO
+    }
+    
+    public void exitJoinStat(JoinStatContext ctx) {
+    	// TODO
+    }
+    
+    public void exitExprStat(ExprStatContext ctx) {
+    	commands.put(ctx, commands.get(ctx.expr()));
+    }
+    
+    // ------------------------------------------
+    // --------------- Block --------------------
+    // ------------------------------------------
+    
+    public void enterBlock(BlockContext ctx) {
+    	scope.openScope();
+    }
+    
+    public void exitBlock(BlockContext ctx) {
+    	ArrayList<String> cmds = new ArrayList<>();
+    	for (StatementContext bla : ctx.statement()) {
+    		cmds.addAll(commands.get(bla));
+    	}
+    	commands.put(ctx, cmds);
+    	scope.closeScope();
+    }
+    
+    // ------------------------------------------
+    // --------------- Comp ---------------------
     // ------------------------------------------
     
     public void exitComp(CompContext ctx) {
@@ -104,11 +168,12 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.addAll(commands.get(ctx.expr(1)));
     	cmds.add("Pop regB");
     	cmds.add("Pop regA");
+    	// TODO add actual comparison
     	commands.put(ctx, cmds);
     }
 
     // ------------------------------------------
-    // -------------- Expr ----------------------
+    // ---------------- Expr --------------------
     // ------------------------------------------
     
     public void exitAddExpr(AddExprContext ctx) {
@@ -217,7 +282,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     public void exitParFactor(ParFactorContext ctx) {
     	commands.put(ctx, commands.get(ctx.expr()));
     }
-
+    
     public void init() {
         file = new File("myProgram.hs");
         try {
