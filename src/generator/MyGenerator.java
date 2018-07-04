@@ -118,7 +118,7 @@ public class MyGenerator extends MyGrammarBaseListener {
     	cmds.add("Branch regC (Rel " + String.valueOf(commands.get(ctx.block()).size() + commands.get(ctx.expr()).size() + 2) + ")");
     	cmds.addAll(commands.get(ctx.block()));
     	cmds.addAll(commands.get(ctx.expr()));
-    	cmds.add("Jump (Rel (-" + String.valueOf(cmds.size() - commands.get(ctx.assignment()).size() - commands.get(ctx.comp()).size()) + "))");
+    	cmds.add("Jump (Rel (-" + String.valueOf(cmds.size() - commands.get(ctx.assignment()).size()) + "))");
     	commands.put(ctx, cmds);
     }
 
