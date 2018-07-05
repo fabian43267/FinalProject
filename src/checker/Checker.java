@@ -270,7 +270,7 @@ public class Checker extends MyGrammarBaseListener {
 				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
 						+ ": Variable has already been declared in the same scope");
 			} else if (globalScope.isDefined(ctx.ID().getText())) {
-				Token t = ctx.GLOBAL().getSymbol();
+				Token t = ctx.ID().getSymbol();
 				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
 						+ ": Variable has already been defined as global");
 			} else {
