@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import checker.Scope;
 import grammar.MyGrammarBaseListener;
 import grammar.MyGrammarParser.AddExprContext;
+import grammar.MyGrammarParser.ArrayAssignContext;
+import grammar.MyGrammarParser.ArrayDeclAssignContext;
 import grammar.MyGrammarParser.ArrayFactorContext;
 import grammar.MyGrammarParser.AssignExprContext;
 import grammar.MyGrammarParser.BlockContext;
@@ -22,6 +24,7 @@ import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
 import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
+import grammar.MyGrammarParser.ExprContext;
 import grammar.MyGrammarParser.ExprStatContext;
 import grammar.MyGrammarParser.FactorExpoContext;
 import grammar.MyGrammarParser.ForStatContext;
@@ -46,7 +49,8 @@ public class MyGenerator extends MyGrammarBaseListener {
 	private HashMap<ParseTree, ArrayList<String>> forks;
 	private ArrayList<String> cmdsList;
 	private HashMap<String, Integer> variables; // variable name and address
-	private int addrTop;
+	private HashMap<String, Integer> globalVariables; // same as variables, just global
+	private int addrTop, globalMemOffset;
 	private Scope scope;
 	private File file;
 
@@ -54,32 +58,84 @@ public class MyGenerator extends MyGrammarBaseListener {
 		commands = new ParseTreeProperty<>();
 		variables = new HashMap<>();
 		addrTop = 0;
+		globalMemOffset = 0;
 		scope = new Scope();
 		forks = new HashMap<>();
+		globalVariables = new HashMap<>();
 	}
 
 	// ------------------------------------------
 	// ----------- Assignments ------------------
 	// ------------------------------------------
-	
+
 	@Override
 	public void exitDeclAssign(DeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		variables.put(ctx.ID().getText(), addrTop); // add the variable to the map
+
 		cmds.addAll(commands.get(ctx.expr()));
 		cmds.add("Pop regA");
 
-		cmds.add("Store regA (DirAddr " + addrTop + ")");
-		addrTop += 1; // increment the address to make room for the next variable
+		if (ctx.GLOBAL() == null) {
+			variables.put(ctx.ID().getText(), addrTop);
+			cmds.add("Store regA (DirAddr " + addrTop + ")");
+			addrTop += 1;
+		} else {
+			globalVariables.put(ctx.ID().getText(), globalMemOffset);
+			cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
+			globalMemOffset += 1;
+		}
 		commands.put(ctx, cmds);
 	}
 
 	@Override
 	public void exitVarAssign(VarAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
+
 		cmds.addAll(commands.get(ctx.expr()));
 		cmds.add("Pop regA");
-		cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
+
+		if (variables.containsKey(ctx.ID().getText())) {
+			cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
+		} else {
+			cmds.add("WriteInstr regA (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+		}
+		commands.put(ctx, cmds);
+	}
+	
+	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		variables.put(ctx.ID().getText(), addrTop);
+		
+		for (ExprContext expr : ctx.expr()) {
+			cmds.addAll(commands.get(expr));
+			cmds.add("Pop regA");
+			cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
+			addrTop += 1;
+		}
+		
+		commands.put(ctx, cmds);
+	}
+	
+	public void exitArrayAssign(ArrayAssignContext ctx) {
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		// calculate address in memory and push on stack
+		cmds.addAll(commands.get(ctx.expr(0)));
+		cmds.add("Pop regA");
+		cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
+		cmds.add("Compute Add regA regB regA");
+		cmds.add("Push regA");
+		
+		// calculate expr
+		cmds.addAll(commands.get(ctx.expr(1)));
+		
+		cmds.add("Pop regA"); // pop result of expr
+		cmds.add("Pop regB"); // pop address
+		
+		// store result at address
+		cmds.add("Store regA (IndAddr regB)");
+		
 		commands.put(ctx, cmds);
 	}
 
@@ -113,14 +169,14 @@ public class MyGenerator extends MyGrammarBaseListener {
 		// Build jump instructions
 		ArrayList<String> jumps = new ArrayList<>();
 		for (int i = 0; i < offsets.size(); i++) {
-			jumps.add("Load (ImmValue " + (i+1) + ") regA");
+			jumps.add("Load (ImmValue " + (i + 1) + ") regA");
 			jumps.add("Compute Equal regSprID regA regC");
-			jumps.add("Branch regC (Rel " + (((offsets.size() - (i+1)) * 3) + offsets.get(i) + 1) + ")");
+			jumps.add("Branch regC (Rel " + (((offsets.size() - (i + 1)) * 3) + offsets.get(i) + 1) + ")");
 		}
-		
+
 		// Build program from blocks
 		cmds.add("Branch regSprID (Rel " + (mainBlock.size() + 1) + ")");
-		cmds.addAll(mainBlock);		
+		cmds.addAll(mainBlock);
 		cmds.addAll(jumps);
 		cmds.addAll(forkBlock);
 
@@ -328,13 +384,30 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	public void exitVarFactor(VarFactorContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		cmds.add("Load (DirAddr " + variables.get(ctx.ID().getText()) + ") regA");
+
+		if (variables.containsKey(ctx.ID().getText())) {
+			cmds.add("Load (DirAddr " + variables.get(ctx.ID().getText()) + ") regA");
+		} else {
+			cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ") reg A");
+		}
 		cmds.add("Push regA");
 		commands.put(ctx, cmds);
 	}
 
 	public void exitArrayFactor(ArrayFactorContext ctx) {
-		// TODO
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		// calculate address in memory and push on stack
+		cmds.addAll(commands.get(ctx.expr()));
+		cmds.add("Pop regA");
+		cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
+		cmds.add("Compute Add regA regB regA");
+		
+		// load value and push to stack
+		cmds.add("Load (IndAddr regA) regA");
+		cmds.add("Push regA");
+		
+		commands.put(ctx, cmds);
 	}
 
 	public void exitCharFactor(CharFactorContext ctx) {
@@ -384,12 +457,12 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 		String s = sBuilder.toString();
 		s += cmdsList.get(cmdsList.size() - 1); // to be uncommented when actually generated
-		
+
 		String tmp = "prog";
 		for (int i = 0; i < forks.size(); i++) {
 			tmp += ",prog";
 		}
-		
+
 		s += "\n       ]\n\nmain = run [" + tmp + "]\n";
 		return s;
 	}
