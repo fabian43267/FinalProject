@@ -110,7 +110,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		for (ExprContext expr : ctx.expr()) {
 			cmds.addAll(commands.get(expr));
 			cmds.add("Pop regA");
-			cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
+			cmds.add("Store regA (DirAddr " + (variables.get(ctx.ID().getText()) + addrTop) + ")");
 			addrTop += 1;
 		}
 		
