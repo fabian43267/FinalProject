@@ -116,7 +116,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		for (int i = 0; i < offsets.size(); i++) {
 			jumps.add("Load (ImmValue " + (i+1) + ") regA");
 			jumps.add("Compute Equal regSprID regA regC");
-			jumps.add("Branch regC (Rel " + (((offsets.size() - (i+1)) * 3) + offsets.get(i) - 2) + ")");
+			jumps.add("Branch regC (Rel " + (((offsets.size() - (i+1)) * 3) + offsets.get(i) - 4) + ")");
 		}
 		
 		// Build program from blocks
