@@ -2,7 +2,15 @@ int i = 0
 int a = 0
 fork {
   int i = 400
+  int j = 200
+  int k = 500
 }
 fork {
   int a = 200
+  int bla = 1000
+}
+fork {
+  int a = 4300
+  bool b = true
+  char d = 'd'
 }

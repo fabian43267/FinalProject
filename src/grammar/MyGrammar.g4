@@ -2,7 +2,7 @@ grammar MyGrammar;
 
 program : statement+;
 
-assignment : TYPE ID ASSIGN expr                               # declAssign
+assignment : GLOBAL? TYPE ID ASSIGN expr                       # declAssign
            | ID ASSIGN expr                                    # varAssign
            | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC # arrayDeclAssign
            | ID LSQBRAC expr RSQBRAC ASSIGN expr               # arrayAssign
@@ -50,6 +50,7 @@ WHILE : 'while';
 FOR : 'for';
 FORK : 'fork';
 JOIN : 'join';
+GLOBAL : 'global';
 
 // symbols
 COMMA :   ',';

@@ -17,12 +17,13 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class Checker extends MyGrammarBaseListener {
 	private ParseTreeProperty<Type> types;
-	private Scope scope;
+	private Scope scope, globalScope;
 	private ArrayList<String> errors;
 
 	public Checker() {
 		types = new ParseTreeProperty<>();
 		scope = new Scope();
+		globalScope = new Scope();
 		errors = new ArrayList<>();
 	}
 	
@@ -76,6 +77,8 @@ public class Checker extends MyGrammarBaseListener {
 	public void exitVarFactor(VarFactorContext ctx) {
 		if (scope.isDefined(ctx.ID().getText())) {
 			types.put(ctx, scope.getType(ctx.ID().getText()));
+		} else if (globalScope.isDefined(ctx.ID().getText())) {
+			types.put(ctx, globalScope.getType(ctx.ID().getText()));
 		} else {
 			Token t = ctx.ID().getSymbol();
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable "
@@ -263,14 +266,22 @@ public class Checker extends MyGrammarBaseListener {
 			} else if (scope.isInCurrentScope(ctx.ID().getText())) {
 				Token t = ctx.ID().getSymbol();
 				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable has already been declared in the same scope");
-			} else {
+			} else if (globalScope.isDefined(ctx.ID().getText())) {
+				Token t = ctx.GLOBAL().getSymbol();
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable has already been defined as global");
+			}
+			else {
+				if (ctx.GLOBAL() == null) {
 				scope.addVariable(ctx.ID().getText(), t1);
+				} else {
+					globalScope.addVariable(ctx.ID().getText(), t1);
+				}
 			}
 		}
 	}
 
 	public void exitVarAssign(VarAssignContext ctx) {
-		if (scope.isDefined(ctx.ID().getText())) {
+		if (scope.isDefined(ctx.ID().getText()) || globalScope.isDefined(ctx.ID().getText())) {
 			Type t1 = scope.getType(ctx.ID().getText());
 			Type t2 = types.get(ctx.expr());
 

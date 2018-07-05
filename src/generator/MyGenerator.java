@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import checker.Scope;
 import grammar.MyGrammarBaseListener;
-import grammar.MyGrammarParser;
 import grammar.MyGrammarParser.AddExprContext;
 import grammar.MyGrammarParser.ArrayFactorContext;
 import grammar.MyGrammarParser.AssignExprContext;
@@ -59,10 +58,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		forks = new HashMap<>();
 	}
 
-	@Override
-	public void enterProgram(MyGrammarParser.ProgramContext ctx) {
-	}
-
+	// ------------------------------------------
+	// ----------- Assignments ------------------
+	// ------------------------------------------
+	
 	@Override
 	public void exitDeclAssign(DeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
@@ -106,9 +105,9 @@ public class MyGenerator extends MyGrammarBaseListener {
 		ArrayList<String> forkBlock = new ArrayList<>();
 		ArrayList<Integer> offsets = new ArrayList<>();
 		for (ArrayList<String> f : forks.values()) {
+			offsets.add(forkBlock.size());
 			forkBlock.addAll(f);
 			forkBlock.add("EndProg");
-			offsets.add(forkBlock.size());
 		}
 
 		// Build jump instructions
@@ -116,7 +115,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		for (int i = 0; i < offsets.size(); i++) {
 			jumps.add("Load (ImmValue " + (i+1) + ") regA");
 			jumps.add("Compute Equal regSprID regA regC");
-			jumps.add("Branch regC (Rel " + (((offsets.size() - (i+1)) * 3) + offsets.get(i) - 4) + ")");
+			jumps.add("Branch regC (Rel " + (((offsets.size() - (i+1)) * 3) + offsets.get(i) + 1) + ")");
 		}
 		
 		// Build program from blocks
@@ -348,6 +347,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitParFactor(ParFactorContext ctx) {
 		commands.put(ctx, commands.get(ctx.expr()));
 	}
+
+	// ------------------------------------------
+	// ------------ Generating Code -------------
+	// ------------------------------------------
 
 	public void init() {
 		file = new File("myProgram.hs");
