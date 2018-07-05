@@ -27,7 +27,7 @@ public class Compiler {
 		if (args.length > 0) {
 			progPath = new File(MAC_DIR + args[0]).toPath();
 		} else {
-			progPath = new File(ECLIPSE_DIR + "program6.txt").toPath();
+			progPath = new File(ECLIPSE_DIR + "program2.txt").toPath();
 		}
 		
 		// create parse tree

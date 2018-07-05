@@ -346,9 +346,16 @@ public class Checker extends MyGrammarBaseListener {
 	}
 	
 	public void exitPrintStat(PrintStatContext ctx) {
-		if (!scope.isDefined(ctx.ID().getText()) || !globalScope.isDefined(ctx.ID().getText())) {
+		if (!scope.isDefined(ctx.ID().getText()) && !globalScope.isDefined(ctx.ID().getText())) {
 			Token t = ctx.ID().getSymbol();
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable not defined");
 		}
+	}
+	
+	public void exitPrintStatArray(PrintStatArrayContext ctx) {
+		if (!scope.isDefined(ctx.ID().getText()) && !globalScope.isDefined(ctx.ID().getText())) {
+			Token t = ctx.ID().getSymbol();
+			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable not defined");
+		} 
 	}
 }
