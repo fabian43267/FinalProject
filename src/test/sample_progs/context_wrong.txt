@@ -1,0 +1,5 @@
+int a = 5
+bool a = true
+
+bool b = 2
+
