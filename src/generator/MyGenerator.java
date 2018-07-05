@@ -302,7 +302,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		for (int memAddr : threadLocks) {
 			cmds.add("TestAndSet (DirAddr " + memAddr + ")");
 			cmds.add("Receive regA");
-			cmds.add("Branch regA (Rel -2)");
+			cmds.add("Branch regA (Rel (-2))");
 		}
 		
 		// reset list of memory addresses
