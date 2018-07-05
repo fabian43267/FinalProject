@@ -265,7 +265,24 @@ public class MyGenerator extends MyGrammarBaseListener {
 	}
 	
 	public void exitPrintStatArray(PrintStatArrayContext ctx) {
-		// TODO
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		if (variables.containsKey(ctx.ID().getText())) {
+			// calculate address in memory
+			cmds.addAll(commands.get(ctx.expr()));
+			cmds.add("Pop regA");
+			cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
+			cmds.add("Compute Add regA regB regA");
+			// load that address
+			cmds.add("Load (IndAddr regA) regA");
+		} else {
+			cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+			cmds.add("Receive regA");
+		}
+
+		cmds.add("WriteInstr regA numberIO");
+		
+		commands.put(ctx, cmds);
 	}
 
 	// ------------------------------------------
@@ -419,7 +436,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitArrayFactor(ArrayFactorContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		// calculate address in memory and push on stack
+		// calculate address in memory
 		cmds.addAll(commands.get(ctx.expr()));
 		cmds.add("Pop regA");
 		cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
