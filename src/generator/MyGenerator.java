@@ -1,28 +1,45 @@
 package generator;
 
-import checker.Checker;
-import checker.Scope;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import grammar.MyGrammarLexer;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
+import checker.Scope;
 import grammar.MyGrammarBaseListener;
 import grammar.MyGrammarParser;
-import grammar.MyGrammarParser.*;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import grammar.MyGrammarParser.AddExprContext;
+import grammar.MyGrammarParser.ArrayFactorContext;
+import grammar.MyGrammarParser.AssignExprContext;
+import grammar.MyGrammarParser.BlockContext;
+import grammar.MyGrammarParser.BoolFactorContext;
+import grammar.MyGrammarParser.CharFactorContext;
+import grammar.MyGrammarParser.CompContext;
+import grammar.MyGrammarParser.DeclAssignContext;
+import grammar.MyGrammarParser.ExpExpoContext;
+import grammar.MyGrammarParser.ExpoTermContext;
+import grammar.MyGrammarParser.ExprStatContext;
+import grammar.MyGrammarParser.FactorExpoContext;
+import grammar.MyGrammarParser.ForStatContext;
+import grammar.MyGrammarParser.ForkStatContext;
+import grammar.MyGrammarParser.IfStatContext;
+import grammar.MyGrammarParser.JoinStatContext;
+import grammar.MyGrammarParser.MultTermContext;
+import grammar.MyGrammarParser.NegExprContext;
+import grammar.MyGrammarParser.NegTermContext;
+import grammar.MyGrammarParser.NumFactorContext;
+import grammar.MyGrammarParser.ParFactorContext;
+import grammar.MyGrammarParser.ProgramContext;
+import grammar.MyGrammarParser.StatementContext;
+import grammar.MyGrammarParser.TermExprContext;
+import grammar.MyGrammarParser.VarAssignContext;
+import grammar.MyGrammarParser.VarFactorContext;
+import grammar.MyGrammarParser.WhileStatContext;
 
 public class MyGenerator extends MyGrammarBaseListener {
 
@@ -39,6 +56,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		variables = new HashMap<>();
 		addrTop = 0;
 		scope = new Scope();
+		forks = new HashMap<>();
 	}
 
 	@Override
@@ -363,7 +381,13 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 		String s = sBuilder.toString();
 		s += cmdsList.get(cmdsList.size() - 1); // to be uncommented when actually generated
-		s += "\n       ]\n\nmain = run [prog]\n";
+		
+		String tmp = "prog";
+		for (int i = 0; i < forks.size(); i++) {
+			tmp += ",prog";
+		}
+		
+		s += "\n       ]\n\nmain = run [" + tmp + "]\n";
 		return s;
 	}
 
