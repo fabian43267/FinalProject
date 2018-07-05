@@ -105,11 +105,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		// offsets for jumping to the right thread
 		ArrayList<String> forkBlock = new ArrayList<>();
 		ArrayList<Integer> offsets = new ArrayList<>();
-		int jumpOffset = forks.size() + 1;
 		for (ArrayList<String> f : forks.values()) {
 			forkBlock.addAll(f);
 			forkBlock.add("EndProg");
-			offsets.add(jumpOffset + forkBlock.size());
+			offsets.add(forkBlock.size());
 		}
 
 		// Build jump instructions
@@ -117,7 +116,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		for (int i = 0; i < offsets.size(); i++) {
 			jumps.add("Load (ImmValue " + (i+1) + ") regA");
 			jumps.add("Compute Equal regSprID regA regC");
-			jumps.add("Branch regC (Rel " + ((offsets.size() - (i+1)) * 3 + offsets.get(i)) + ")");
+			jumps.add("Branch regC (Rel " + (((offsets.size() - (i+1)) * 3) + offsets.get(i) - 2) + ")");
 		}
 		
 		// Build program from blocks
