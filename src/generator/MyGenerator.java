@@ -276,14 +276,14 @@ public class MyGenerator extends MyGrammarBaseListener {
 		ArrayList<String> cmds = new ArrayList<>();
 		
 		// load 1 into shared memory ( 1 = not finished execution )
-		cmds.add("Load (ImmValue 0) regA");
+		cmds.add("Load (ImmValue 1) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
 		
 		// actual code that thread executes
 		cmds.addAll(commands.get(ctx.block()));
 		
 		// load 0 into shared memory ( 0 = finished execution )
-		cmds.add("Load (ImmValue 1) regA");
+		cmds.add("Load (ImmValue 0) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
 		
 		// store memory address for the join and increase memory offset
