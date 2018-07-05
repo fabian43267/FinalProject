@@ -291,7 +291,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		globalMemOffset += 1;
 		
 		useForkMap = false;
-		commands.put(ctx, cmds);
+		forks.put(ctx, cmds);
 	}
 
 	@Override
