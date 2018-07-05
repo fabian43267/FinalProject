@@ -26,10 +26,10 @@ public class Checker extends MyGrammarBaseListener {
 		globalScope = new Scope();
 		errors = new ArrayList<>();
 	}
-	
+
 	public static ArrayList<String> checkProgram(String file) {
 		Checker checker = new Checker();
-		
+
 		try {
 			ParseTree tree = parse(file);
 			ParseTreeWalker walker = new ParseTreeWalker();
@@ -37,14 +37,14 @@ public class Checker extends MyGrammarBaseListener {
 		} catch (IOException e) {
 			System.out.println("Error: File could not be read");
 		}
-		
+
 		return checker.getErrors();
 	}
-	
+
 	public ArrayList<String> getErrors() {
 		return errors;
 	}
-	
+
 	public static ParseTree parse(String file) throws IOException {
 		Lexer lexer = new MyGrammarLexer(CharStreams.fromPath(new File(file).toPath()));
 		lexer.removeErrorListeners();
@@ -95,12 +95,13 @@ public class Checker extends MyGrammarBaseListener {
 		} else {
 			Type t1 = scope.getType(ctx.ID().getText());
 			Type t2 = types.get(ctx.expr());
-			
+
 			if (t2 == Type.INT) {
 				types.put(ctx, t1);
 			} else {
 				Token t = ctx.ID().getSymbol();
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Index has to be a number");
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Index has to be a number");
 			}
 		}
 	}
@@ -127,13 +128,14 @@ public class Checker extends MyGrammarBaseListener {
 	public void exitExpExpo(ExpExpoContext ctx) {
 		Type t1 = types.get(ctx.factor());
 		Type t2 = types.get(ctx.expo());
-		
+
 		if (t1 != null && t2 != null) {
 			if (t1 == Type.INT && t2 == Type.INT) {
 				types.put(ctx, Type.INT);
 			} else {
 				Token t = ctx.EXP().getSymbol();
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Both arguments of '^' have to be integers");
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Both arguments of '^' have to be integers");
 			}
 		}
 	}
@@ -265,14 +267,15 @@ public class Checker extends MyGrammarBaseListener {
 						+ ": Left and right hand side of the assignment have to be of the same type");
 			} else if (scope.isInCurrentScope(ctx.ID().getText())) {
 				Token t = ctx.ID().getSymbol();
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable has already been declared in the same scope");
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Variable has already been declared in the same scope");
 			} else if (globalScope.isDefined(ctx.ID().getText())) {
 				Token t = ctx.GLOBAL().getSymbol();
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable has already been defined as global");
-			}
-			else {
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Variable has already been defined as global");
+			} else {
 				if (ctx.GLOBAL() == null) {
-				scope.addVariable(ctx.ID().getText(), t1);
+					scope.addVariable(ctx.ID().getText(), t1);
 				} else {
 					globalScope.addVariable(ctx.ID().getText(), t1);
 				}
@@ -282,7 +285,12 @@ public class Checker extends MyGrammarBaseListener {
 
 	public void exitVarAssign(VarAssignContext ctx) {
 		if (scope.isDefined(ctx.ID().getText()) || globalScope.isDefined(ctx.ID().getText())) {
-			Type t1 = scope.getType(ctx.ID().getText());
+			Type t1;
+			if (scope.isDefined(ctx.ID().getText())) {
+				t1 = scope.getType(ctx.ID().getText());
+			} else {
+				t1 = globalScope.getType(ctx.ID().getText());
+			}
 			Type t2 = types.get(ctx.expr());
 
 			if (t1 != t2) {
@@ -299,25 +307,28 @@ public class Checker extends MyGrammarBaseListener {
 
 	public void exitArrayAssign(ArrayAssignContext ctx) {
 		Token t = ctx.ID().getSymbol();
-		
+
 		if (scope.isDefined(ctx.ID().getText())) {
 			Type t1 = scope.getType(ctx.ID().getText());
 			Type t2 = types.get(ctx.expr(0));
 			Type t3 = types.get(ctx.expr(1));
-			
+
 			if (t2 != Type.INT) {
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Index has to be an integer");
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Index has to be an integer");
 			} else if (t1 != t3) {
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Array type and assignment are not of the same type");
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Array type and assignment are not of the same type");
 			}
 		} else {
-			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable " + ctx.ID().getText() + " not defined");
+			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable "
+					+ ctx.ID().getText() + " not defined");
 		}
 	}
-	
+
 	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
 		Type type = parseType(ctx.TYPE().getText());
-		
+
 		for (ExprContext expr : ctx.expr()) {
 			Type typeExpr = types.get(expr);
 			if (typeExpr == null) {
@@ -325,14 +336,15 @@ public class Checker extends MyGrammarBaseListener {
 			}
 			if (typeExpr != type) {
 				Token t = ctx.ID().getSymbol();
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Elements assigned to the array should be of the same type as the array");
+				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+						+ ": Elements assigned to the array should be of the same type as the array");
 				return;
 			}
 		}
-		
+
 		scope.addVariable(ctx.ID().getText(), type);
 	}
-	
+
 	// --------------------------------------------------------------
 	// -------------------- statement rules -------------------------
 	// --------------------------------------------------------------
@@ -340,22 +352,22 @@ public class Checker extends MyGrammarBaseListener {
 	public void enterBlock(BlockContext ctx) {
 		scope.openScope();
 	}
-	
+
 	public void exitBlock(BlockContext ctx) {
 		scope.closeScope();
 	}
-	
+
 	public void exitPrintStat(PrintStatContext ctx) {
 		if (!scope.isDefined(ctx.ID().getText()) && !globalScope.isDefined(ctx.ID().getText())) {
 			Token t = ctx.ID().getSymbol();
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable not defined");
 		}
 	}
-	
+
 	public void exitPrintStatArray(PrintStatArrayContext ctx) {
 		if (!scope.isDefined(ctx.ID().getText()) && !globalScope.isDefined(ctx.ID().getText())) {
 			Token t = ctx.ID().getSymbol();
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable not defined");
-		} 
+		}
 	}
 }

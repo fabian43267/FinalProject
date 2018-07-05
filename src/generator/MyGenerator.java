@@ -442,7 +442,13 @@ public class MyGenerator extends MyGrammarBaseListener {
 	}
 
 	public void exitNegTerm(NegTermContext ctx) {
-		// TODO
+		ArrayList<String> cmds = new ArrayList<>();
+		cmds.addAll(commands.get(ctx.term()));
+		cmds.add("Load (ImmValue 0) regA");
+		cmds.add("Pop regB");
+		cmds.add("Compute Sub regA regB regA");
+		cmds.add("Push regA");
+		commands.put(ctx, cmds);
 	}
 
 	public void exitExpoTerm(ExpoTermContext ctx) {
