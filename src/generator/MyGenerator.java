@@ -53,6 +53,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	private HashMap<String, Integer> variables; // variable name and address
 	private HashMap<String, Integer> forkVariables; // variables for forking
 	private HashMap<String, Integer> globalVariables; // same as variables, just global
+	private ArrayList<Integer> threadLocks;
 	private int addrTop, globalMemOffset;
 	private Scope scope;
 	private File file;
@@ -66,6 +67,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		scope = new Scope();
 		forks = new HashMap<>();
 		globalVariables = new HashMap<>();
+		threadLocks = new ArrayList<>();
 	}
 
 	// ------------------------------------------
@@ -271,13 +273,42 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	@Override
 	public void exitForkStat(ForkStatContext ctx) {
-		forks.put(ctx, commands.get(ctx.block()));
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		// load 1 into shared memory ( 1 = not finished execution )
+		cmds.add("Load (ImmValue 1) regA");
+		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
+		
+		// actual code that thread executes
+		cmds.addAll(commands.get(ctx.block()));
+		
+		// load 0 into shared memory ( 0 = finished execution )
+		cmds.add("Load (ImmValue 0) regA");
+		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
+		
+		// store memory address for the join and increase memory offset
+		threadLocks.add(globalMemOffset);
+		globalMemOffset += 1;
+		
 		useForkMap = false;
+		commands.put(ctx, cmds);
 	}
 
 	@Override
 	public void exitJoinStat(JoinStatContext ctx) {
-		// TODO
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		// add loops that check whether the given threads have set their locks to 0 (i.e. finished their execution)
+		for (int memAddr : threadLocks) {
+			cmds.add("TestAndSet (DirAddr " + memAddr + ")");
+			cmds.add("Receive regA");
+			cmds.add("Branch regA (Rel -2)");
+		}
+		
+		// reset list of memory addresses
+		threadLocks = new ArrayList<>();
+		
+		commands.put(ctx, cmds);
 	}
 
 	@Override
