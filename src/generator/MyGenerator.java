@@ -120,7 +120,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 		
 		// Build program from blocks
-		cmds.add("Branch regSprId (Rel " + (mainBlock.size() + 1) + ")");
+		cmds.add("Branch regSprID (Rel " + (mainBlock.size() + 1) + ")");
 		cmds.addAll(mainBlock);		
 		cmds.addAll(jumps);
 		cmds.addAll(forkBlock);
