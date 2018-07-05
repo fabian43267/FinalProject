@@ -21,6 +21,30 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 */
 	void exitCharFactor(@NotNull MyGrammarParser.CharFactorContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code printStatArray}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrintStatArray(@NotNull MyGrammarParser.PrintStatArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code printStatArray}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrintStatArray(@NotNull MyGrammarParser.PrintStatArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code printStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrintStat(@NotNull MyGrammarParser.PrintStatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code printStat}
+	 * labeled alternative in {@link MyGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrintStat(@NotNull MyGrammarParser.PrintStatContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code arrayAssign}
 	 * labeled alternative in {@link MyGrammarParser#assignment}.
 	 * @param ctx the parse tree

@@ -36,6 +36,8 @@ import grammar.MyGrammarParser.NegExprContext;
 import grammar.MyGrammarParser.NegTermContext;
 import grammar.MyGrammarParser.NumFactorContext;
 import grammar.MyGrammarParser.ParFactorContext;
+import grammar.MyGrammarParser.PrintStatArrayContext;
+import grammar.MyGrammarParser.PrintStatContext;
 import grammar.MyGrammarParser.ProgramContext;
 import grammar.MyGrammarParser.StatementContext;
 import grammar.MyGrammarParser.TermExprContext;
@@ -101,41 +103,41 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 		commands.put(ctx, cmds);
 	}
-	
+
 	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		
+
 		variables.put(ctx.ID().getText(), addrTop);
-		
+
 		for (ExprContext expr : ctx.expr()) {
 			cmds.addAll(commands.get(expr));
 			cmds.add("Pop regA");
 			cmds.add("Store regA (DirAddr " + (variables.get(ctx.ID().getText()) + addrTop) + ")");
 			addrTop += 1;
 		}
-		
+
 		commands.put(ctx, cmds);
 	}
-	
+
 	public void exitArrayAssign(ArrayAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		
+
 		// calculate address in memory and push on stack
 		cmds.addAll(commands.get(ctx.expr(0)));
 		cmds.add("Pop regA");
 		cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
 		cmds.add("Compute Add regA regB regA");
 		cmds.add("Push regA");
-		
+
 		// calculate expr
 		cmds.addAll(commands.get(ctx.expr(1)));
-		
+
 		cmds.add("Pop regA"); // pop result of expr
 		cmds.add("Pop regB"); // pop address
-		
+
 		// store result at address
 		cmds.add("Store regA (IndAddr regB)");
-		
+
 		commands.put(ctx, cmds);
 	}
 
@@ -245,6 +247,25 @@ public class MyGenerator extends MyGrammarBaseListener {
 	@Override
 	public void exitExprStat(ExprStatContext ctx) {
 		commands.put(ctx, commands.get(ctx.expr()));
+	}
+
+	public void exitPrintStat(PrintStatContext ctx) {
+		ArrayList<String> cmds = new ArrayList<>();
+
+		if (variables.containsKey(ctx.ID().getText())) {
+			cmds.add("Load (DirAddr " + variables.get(ctx.ID().getText()) + ") regA");
+		} else {
+			cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+			cmds.add("Receive regA");
+		}
+
+		cmds.add("WriteInstr regA numberIO");
+
+		commands.put(ctx, cmds);
+	}
+	
+	public void exitPrintStatArray(PrintStatArrayContext ctx) {
+		// TODO
 	}
 
 	// ------------------------------------------
@@ -388,7 +409,8 @@ public class MyGenerator extends MyGrammarBaseListener {
 		if (variables.containsKey(ctx.ID().getText())) {
 			cmds.add("Load (DirAddr " + variables.get(ctx.ID().getText()) + ") regA");
 		} else {
-			cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ") reg A");
+			cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+			cmds.add("Receive regA");
 		}
 		cmds.add("Push regA");
 		commands.put(ctx, cmds);
@@ -396,17 +418,17 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	public void exitArrayFactor(ArrayFactorContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		
+
 		// calculate address in memory and push on stack
 		cmds.addAll(commands.get(ctx.expr()));
 		cmds.add("Pop regA");
 		cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
 		cmds.add("Compute Add regA regB regA");
-		
+
 		// load value and push to stack
 		cmds.add("Load (IndAddr regA) regA");
 		cmds.add("Push regA");
-		
+
 		commands.put(ctx, cmds);
 	}
 
@@ -468,7 +490,3 @@ public class MyGenerator extends MyGrammarBaseListener {
 	}
 
 }
-/*
-       , Load (DirAddr 0) regA
-       , WriteInstr regA numberIO
-*/

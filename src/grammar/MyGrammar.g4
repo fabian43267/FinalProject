@@ -15,6 +15,8 @@ statement : IF LPARENT comp RPARENT block (ELSE block)?          # ifStat
           | JOIN                                                 # joinStat
           | expr                                                 # exprStat
           | comment                                              # commentStat
+          | PRINT ID                                             # printStat
+          | PRINT ID LSQBRAC expr RSQBRAC                        # printStatArray
           ;
           
 block : LBRACE statement+ RBRACE;
@@ -51,6 +53,7 @@ FOR : 'for';
 FORK : 'fork';
 JOIN : 'join';
 GLOBAL : 'global';
+PRINT : 'print';
 
 // symbols
 COMMA :   ',';

@@ -344,4 +344,11 @@ public class Checker extends MyGrammarBaseListener {
 	public void exitBlock(BlockContext ctx) {
 		scope.closeScope();
 	}
+	
+	public void exitPrintStat(PrintStatContext ctx) {
+		if (!scope.isDefined(ctx.ID().getText()) || !globalScope.isDefined(ctx.ID().getText())) {
+			Token t = ctx.ID().getSymbol();
+			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable not defined");
+		}
+	}
 }
