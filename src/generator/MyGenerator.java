@@ -275,14 +275,14 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitForkStat(ForkStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		
-		// load 1 into shared memory ( 0 = not finished execution )
+		// load 1 into shared memory ( 1 = not finished execution )
 		cmds.add("Load (ImmValue 0) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
 		
 		// actual code that thread executes
 		cmds.addAll(commands.get(ctx.block()));
 		
-		// load 0 into shared memory ( 1 = finished execution )
+		// load 0 into shared memory ( 0 = finished execution )
 		cmds.add("Load (ImmValue 1) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
 		
@@ -298,14 +298,11 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitJoinStat(JoinStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		
-		cmds.add("Load (ImmValue 0) regB");
-		
 		// add loops that check whether the given threads have set their locks to 0 (i.e. finished their execution)
 		for (int memAddr : threadLocks) {
-			cmds.add("TestAndSet (DirAddr " + memAddr + ")");
+			cmds.add("ReadInstr (DirAddr " + memAddr + ")");
 			cmds.add("Receive regA");
-			cmds.add("Compute And regA regB regA");
-			cmds.add("Branch regA (Rel (-3))");
+			cmds.add("Branch regA (Rel (-2))");
 		}
 		
 		// reset list of memory addresses
