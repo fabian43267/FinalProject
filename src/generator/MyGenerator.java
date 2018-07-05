@@ -469,5 +469,6 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 }
 /*
- * , Load (DirAddr 0) regA , WriteInstr regA numberIO
- */
+       , Load (DirAddr 0) regA
+       , WriteInstr regA numberIO
+*/
