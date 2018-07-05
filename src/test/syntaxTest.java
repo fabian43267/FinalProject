@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class syntaxTest {
+public class SyntaxTest {
 
     @Test
     public void correctSyntax() {
@@ -23,9 +23,9 @@ public class syntaxTest {
     @Test
     public void wrongSyntax() {
         List<String> errors = analyzeSyntax("syntax_wrong.txt");
-        for (String error : errors) {
-            System.out.println(error);
-        }
+//        for (String error : errors) {
+//            System.out.println(error);
+//        }
         assertTrue(!errors.isEmpty());
     }
 
