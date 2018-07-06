@@ -12,7 +12,7 @@ public class ScopeTest {
 	@Test
 	public void test() {
 		// create scope and add two variables
-		Scope scope = new Scope();
+		Scope<Type> scope = new Scope<>();
 		scope.addVariable("a", Type.INT);
 		scope.addVariable("b", Type.CHAR);
 		
@@ -28,10 +28,10 @@ public class ScopeTest {
 		scope.addVariable("a", Type.BOOL);
 		
 		// this should be the last defined variable
-		assertEquals(scope.getType("a"),Type.BOOL); 
+		assertEquals(scope.getData("a"),Type.BOOL); 
 		
 		// when closing the scope, type should be int again
 		scope.closeScope();
-		assertEquals(scope.getType("a"), Type.INT);
+		assertEquals(scope.getData("a"), Type.INT);
 	}
 }
