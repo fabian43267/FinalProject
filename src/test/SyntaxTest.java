@@ -23,9 +23,6 @@ public class SyntaxTest {
     @Test
     public void wrongSyntax() {
         List<String> errors = analyzeSyntax("syntax_wrong.txt");
-//        for (String error : errors) {
-//            System.out.println(error);
-//        }
         assertTrue(!errors.isEmpty());
     }
 
