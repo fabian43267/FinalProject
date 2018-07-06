@@ -297,7 +297,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Nop");
 		
 		// wait until initialization complete
-		cmds.add("ReadInstr (DirAddr 0");
+		cmds.add("ReadInstr (DirAddr 0)");
 		cmds.add("Receive regA");
 		cmds.add("Branch regA (Rel (-2))");
 		
