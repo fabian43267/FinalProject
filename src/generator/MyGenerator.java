@@ -20,6 +20,7 @@ import grammar.MyGrammarParser.AssignExprContext;
 import grammar.MyGrammarParser.BlockContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
+import grammar.MyGrammarParser.CommentContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
 import grammar.MyGrammarParser.DivTermContext;
@@ -408,6 +409,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("WriteInstr regA numberIO");
 
 		commands.put(ctx, cmds);
+	}
+	
+	public void exitComment(CommentContext ctx) {
+		commands.put(ctx, new ArrayList<String>());
 	}
 
 	// ------------------------------------------
