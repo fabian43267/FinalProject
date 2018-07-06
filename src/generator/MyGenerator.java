@@ -581,7 +581,8 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.addAll(commands.get(ctx.expo()));
 		cmds.addAll(commands.get(ctx.factor()));
 		cmds.add("Pop regB");                 // regB contains factor
-		cmds.add("Load (IndAddr regB) regA"); // regA contains the actual result
+		cmds.add("Push regB");
+		cmds.add("Pop regA");
 		cmds.add("Pop regC");                 // regC contains the counter
 		cmds.add("Load (ImmValue 0) regD");   // regD contains first zero, then result of comparison
 		cmds.add("Compute Equal regC regD regD"); // reverse (0 -> 1, 1 -> 0)
