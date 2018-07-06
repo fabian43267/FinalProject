@@ -21,6 +21,7 @@ import grammar.MyGrammarParser.BlockContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
 import grammar.MyGrammarParser.CommentContext;
+import grammar.MyGrammarParser.CommentStatContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
 import grammar.MyGrammarParser.DivTermContext;
@@ -411,7 +412,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		commands.put(ctx, cmds);
 	}
 	
-	public void exitComment(CommentContext ctx) {
+	public void exitCommentStat(CommentStatContext ctx) {
 		commands.put(ctx, new ArrayList<String>());
 	}
 
