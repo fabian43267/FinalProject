@@ -52,24 +52,24 @@ public class MyGenerator extends MyGrammarBaseListener {
 	private ParseTreeProperty<ArrayList<String>> commands;
 	private HashMap<ParseTree, ArrayList<String>> forks;
 	private ArrayList<String> cmdsList;
-	private HashMap<String, Integer> variables; // variable name and address
-	private HashMap<String, Integer> forkVariables; // variables for forking
-	private HashMap<String, Integer> globalVariables; // same as variables, just global
+	private Scope<Integer> variables;     // variable name and address
+	private Scope<Integer> forkVariables;      // variables for forking
+	private Scope<Integer> globalVariables; // same as variables, just global
 	private ArrayList<Integer> threadLocks;
+	private ArrayList<Integer> threadLocksForks;
 	private int addrTop, globalMemOffset;
-	private Scope scope;
 	private File file;
-	private boolean useForkMap = false;
+	private boolean insideFork = false;
 
 	public MyGenerator() {
 		commands = new ParseTreeProperty<>();
-		variables = new HashMap<>();
+		variables = new Scope<>();
 		addrTop = 0;
 		globalMemOffset = 1;
-		scope = new Scope();
 		forks = new HashMap<>();
-		globalVariables = new HashMap<>();
+		globalVariables = new Scope<>();
 		threadLocks = new ArrayList<>();
+		threadLocksForks = new ArrayList<>();
 	}
 
 	// ------------------------------------------
@@ -146,15 +146,15 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Pop regA");
 
 		if (ctx.GLOBAL() == null) {
-			if (useForkMap) {
-				forkVariables.put(ctx.ID().getText(), addrTop);
+			if (insideFork) {
+				forkVariables.addVariable(ctx.ID().getText(), addrTop);
 			} else {
-				variables.put(ctx.ID().getText(), addrTop);
+				variables.addVariable(ctx.ID().getText(), addrTop);
 			}
 			cmds.add("Store regA (DirAddr " + addrTop + ")");
 			addrTop += 1;
 		} else {
-			globalVariables.put(ctx.ID().getText(), globalMemOffset);
+			globalVariables.addVariable(ctx.ID().getText(), globalMemOffset);
 			cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
 			globalMemOffset += 1;
 		}
@@ -172,17 +172,17 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 		cmds.add("Pop regA");
 
-		if (useForkMap) {
-			if (forkVariables.containsKey(ctx.ID().getText())) {
-				cmds.add("Store regA (DirAddr " + forkVariables.get(ctx.ID().getText()) + ")");
+		if (insideFork) {
+			if (forkVariables.isDefined(ctx.ID().getText())) {
+				cmds.add("Store regA (DirAddr " + forkVariables.getData(ctx.ID().getText()) + ")");
 			} else {
-				cmds.add("WriteInstr regA (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("WriteInstr regA (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 			}
 		} else {
-			if (variables.containsKey(ctx.ID().getText())) {
-				cmds.add("Store regA (DirAddr " + variables.get(ctx.ID().getText()) + ")");
+			if (variables.isDefined(ctx.ID().getText())) {
+				cmds.add("Store regA (DirAddr " + variables.getData(ctx.ID().getText()) + ")");
 			} else {
-				cmds.add("WriteInstr regA (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("WriteInstr regA (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 			}
 		}
 		commands.put(ctx, cmds);
@@ -190,20 +190,20 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		HashMap<String, Integer> vars;
-		if (useForkMap) {
+		Scope<Integer> vars;
+		if (insideFork) {
 			vars = forkVariables;
 		} else {
 			vars = variables;
 		}
 
-		vars.put(ctx.ID().getText(), addrTop);
+		vars.addVariable(ctx.ID().getText(), addrTop);
 
 		for (ParseTree elem : ctx.children) {
 			if (elem instanceof ExprContext || elem instanceof CompContext) {
 				cmds.addAll(commands.get(elem));
 				cmds.add("Pop regA");
-				cmds.add("Store regA (DirAddr " + (vars.get(ctx.ID().getText()) + addrTop) + ")");
+				cmds.add("Store regA (DirAddr " + (vars.getData(ctx.ID().getText()) + addrTop) + ")");
 				addrTop += 1;
 			}
 		}
@@ -218,10 +218,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.addAll(commands.get(ctx.expr(0)));
 		cmds.add("Pop regA");
 
-		if (useForkMap) {
-			cmds.add("Load (ImmValue " + forkVariables.get(ctx.ID().getText()) + ") regB");
+		if (insideFork) {
+			cmds.add("Load (ImmValue " + forkVariables.getData(ctx.ID().getText()) + ") regB");
 		} else {
-			cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
+			cmds.add("Load (ImmValue " + variables.getData(ctx.ID().getText()) + ") regB");
 		}
 		cmds.add("Compute Add regA regB regA");
 		cmds.add("Push regA");
@@ -294,8 +294,8 @@ public class MyGenerator extends MyGrammarBaseListener {
 	}
 
 	public void enterForkStat(ForkStatContext ctx) {
-		useForkMap = true;
-		forkVariables = new HashMap<>();
+		insideFork = true;
+		forkVariables.openScope();
 	}
 
 	@Override
@@ -327,7 +327,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		threadLocks.add(globalMemOffset);
 		globalMemOffset += 1;
 
-		useForkMap = false;
+		insideFork = false;
 		forks.put(ctx, cmds);
 	}
 
@@ -357,18 +357,18 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitPrintStat(PrintStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		if (useForkMap) {
-			if (forkVariables.containsKey(ctx.ID().getText())) {
-				cmds.add("Load (DirAddr " + forkVariables.get(ctx.ID().getText()) + ") regA");
+		if (insideFork) {
+			if (forkVariables.isDefined(ctx.ID().getText())) {
+				cmds.add("Load (DirAddr " + forkVariables.getData(ctx.ID().getText()) + ") regA");
 			} else {
-				cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("ReadInstr (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 				cmds.add("Receive regA");
 			}
 		} else {
-			if (variables.containsKey(ctx.ID().getText())) {
-				cmds.add("Load (DirAddr " + variables.get(ctx.ID().getText()) + ") regA");
+			if (variables.isDefined(ctx.ID().getText())) {
+				cmds.add("Load (DirAddr " + variables.getData(ctx.ID().getText()) + ") regA");
 			} else {
-				cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("ReadInstr (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 				cmds.add("Receive regA");
 			}
 		}
@@ -381,30 +381,30 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitPrintStatArray(PrintStatArrayContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		if (useForkMap) {
-			if (forkVariables.containsKey(ctx.ID().getText())) {
+		if (insideFork) {
+			if (forkVariables.isDefined(ctx.ID().getText())) {
 				// calculate address in memory
 				cmds.addAll(commands.get(ctx.expr()));
 				cmds.add("Pop regA");
-				cmds.add("Load (ImmValue " + forkVariables.get(ctx.ID().getText()) + ") regB");
+				cmds.add("Load (ImmValue " + forkVariables.getData(ctx.ID().getText()) + ") regB");
 				cmds.add("Compute Add regA regB regA");
 				// load that address
 				cmds.add("Load (IndAddr regA) regA");
 			} else {
-				cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("ReadInstr (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 				cmds.add("Receive regA");
 			}
 		} else {
-			if (variables.containsKey(ctx.ID().getText())) {
+			if (variables.isDefined(ctx.ID().getText())) {
 				// calculate address in memory
 				cmds.addAll(commands.get(ctx.expr()));
 				cmds.add("Pop regA");
-				cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
+				cmds.add("Load (ImmValue " + variables.getData(ctx.ID().getText()) + ") regB");
 				cmds.add("Compute Add regA regB regA");
 				// load that address
 				cmds.add("Load (IndAddr regA) regA");
 			} else {
-				cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("ReadInstr (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 				cmds.add("Receive regA");
 			}
 		}
@@ -424,7 +424,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	@Override
 	public void enterBlock(BlockContext ctx) {
-		scope.openScope();
+		variables.openScope();
 	}
 
 	@Override
@@ -436,7 +436,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 			}
 		}
 		commands.put(ctx, cmds);
-		scope.closeScope();
+		variables.closeScope();
 	}
 
 	// ------------------------------------------
@@ -605,18 +605,18 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitVarFactor(VarFactorContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		if (useForkMap) {
-			if (forkVariables.containsKey(ctx.ID().getText())) {
-				cmds.add("Load (DirAddr " + forkVariables.get(ctx.ID().getText()) + ") regA");
+		if (insideFork) {
+			if (forkVariables.isDefined(ctx.ID().getText())) {
+				cmds.add("Load (DirAddr " + forkVariables.getData(ctx.ID().getText()) + ") regA");
 			} else {
-				cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("ReadInstr (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 				cmds.add("Receive regA");
 			}
 		} else {
-			if (variables.containsKey(ctx.ID().getText())) {
-				cmds.add("Load (DirAddr " + variables.get(ctx.ID().getText()) + ") regA");
+			if (variables.isDefined(ctx.ID().getText())) {
+				cmds.add("Load (DirAddr " + variables.getData(ctx.ID().getText()) + ") regA");
 			} else {
-				cmds.add("ReadInstr (DirAddr " + globalVariables.get(ctx.ID().getText()) + ")");
+				cmds.add("ReadInstr (DirAddr " + globalVariables.getData(ctx.ID().getText()) + ")");
 				cmds.add("Receive regA");
 			}
 		}
@@ -631,10 +631,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.addAll(commands.get(ctx.expr()));
 		cmds.add("Pop regA");
 
-		if (useForkMap) {
-			cmds.add("Load (ImmValue " + forkVariables.get(ctx.ID().getText()) + ") regB");
+		if (insideFork) {
+			cmds.add("Load (ImmValue " + forkVariables.getData(ctx.ID().getText()) + ") regB");
 		} else {
-			cmds.add("Load (ImmValue " + variables.get(ctx.ID().getText()) + ") regB");
+			cmds.add("Load (ImmValue " + variables.getData(ctx.ID().getText()) + ") regB");
 		}
 		cmds.add("Compute Add regA regB regA");
 

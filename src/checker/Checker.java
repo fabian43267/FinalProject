@@ -17,13 +17,13 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class Checker extends MyGrammarBaseListener {
 	private ParseTreeProperty<Type> types;
-	private Scope scope, globalScope;
+	private Scope<Type> scope, globalScope;
 	private ArrayList<String> errors;
 
 	public Checker() {
 		types = new ParseTreeProperty<>();
-		scope = new Scope();
-		globalScope = new Scope();
+		scope = new Scope<>();
+		globalScope = new Scope<>();
 		errors = new ArrayList<>();
 	}
 
@@ -76,9 +76,9 @@ public class Checker extends MyGrammarBaseListener {
 	@Override
 	public void exitVarFactor(VarFactorContext ctx) {
 		if (scope.isDefined(ctx.ID().getText())) {
-			types.put(ctx, scope.getType(ctx.ID().getText()));
+			types.put(ctx, scope.getData(ctx.ID().getText()));
 		} else if (globalScope.isDefined(ctx.ID().getText())) {
-			types.put(ctx, globalScope.getType(ctx.ID().getText()));
+			types.put(ctx, globalScope.getData(ctx.ID().getText()));
 		} else {
 			Token t = ctx.ID().getSymbol();
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable "
@@ -93,7 +93,7 @@ public class Checker extends MyGrammarBaseListener {
 			errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine() + ": Variable "
 					+ ctx.ID().getText() + " not defined");
 		} else {
-			Type t1 = scope.getType(ctx.ID().getText());
+			Type t1 = scope.getData(ctx.ID().getText());
 			Type t2 = types.get(ctx.expr());
 
 			if (t2 == Type.INT) {
@@ -315,9 +315,9 @@ public class Checker extends MyGrammarBaseListener {
 		if (scope.isDefined(ctx.ID().getText()) || globalScope.isDefined(ctx.ID().getText())) {
 			Type t1;
 			if (scope.isDefined(ctx.ID().getText())) {
-				t1 = scope.getType(ctx.ID().getText());
+				t1 = scope.getData(ctx.ID().getText());
 			} else {
-				t1 = globalScope.getType(ctx.ID().getText());
+				t1 = globalScope.getData(ctx.ID().getText());
 			}
 			Type t2;
 			if (ctx.expr() == null) {
@@ -342,7 +342,7 @@ public class Checker extends MyGrammarBaseListener {
 		Token t = ctx.ID().getSymbol();
 
 		if (scope.isDefined(ctx.ID().getText())) {
-			Type t1 = scope.getType(ctx.ID().getText());
+			Type t1 = scope.getData(ctx.ID().getText());
 			Type t2 = types.get(ctx.expr(0));
 			Type t3;
 			if (ctx.expr(1) == null) {

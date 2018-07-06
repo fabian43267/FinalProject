@@ -3,19 +3,19 @@ package checker;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class Scope {
-	private Stack<HashMap<String,Type>> scopes;
+public class Scope<E> {
+	private Stack<HashMap<String,E>> scopes;
 	
 	public Scope() {
 		scopes = new Stack<>();
 		openScope();
 	}
 	
-	public boolean addVariable(String id, Type type) {
+	public boolean addVariable(String id, E data) {
 		if (scopes.peek().containsKey(id)) {
 			return false;
 		} else {
-			scopes.peek().put(id, type);
+			scopes.peek().put(id, data);
 			return true;
 		}
 	}
@@ -28,7 +28,7 @@ public class Scope {
 		return result;
 	}
 	
-	public Type getType(String id) {
+	public E getData(String id) {
 		for (int i = scopes.size() - 1; i >= 0; i--) {
 			if (scopes.get(i).containsKey(id)) {
 				return scopes.get(i).get(id);
