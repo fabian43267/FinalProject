@@ -204,10 +204,10 @@ public class Checker extends MyGrammarBaseListener {
 		Type t1 = types.get(ctx.expr());
 		Type t2 = types.get(ctx.term());
 		if (t1 != null && t2 != null) {
-			if (t1 != Type.INT && t2 != Type.INT) {
+			if ((t1 != Type.INT && t2 != Type.INT)|| (t1 != Type.CHAR && t2 != Type.CHAR)) {
 				Token token = ctx.ADD().getSymbol();
 				errors.add("Line " + token.getLine() + ", Position " + token.getCharPositionInLine()
-						+ ": Can only add two integers");
+						+ ": Can only add two integers or chars");
 			} else {
 				types.put(ctx, Type.INT);
 			}
@@ -219,10 +219,10 @@ public class Checker extends MyGrammarBaseListener {
 		Type t1 = types.get(ctx.expr());
 		Type t2 = types.get(ctx.term());
 		if (t1 != null && t2 != null) {
-			if (t1 != Type.INT && t2 != Type.INT) {
+			if ((t1 != Type.INT && t2 != Type.INT) || (t1 != Type.CHAR && t2 != Type.CHAR)) {
 				Token token = ctx.NEG().getSymbol();
 				errors.add("Line " + token.getLine() + ", Position " + token.getCharPositionInLine()
-						+ ": Can only subtract two integers");
+						+ ": Can only subtract two integers or chars");
 			} else {
 				types.put(ctx, Type.INT);
 			}
