@@ -68,6 +68,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		globalMemOffset = 1;
 		forks = new HashMap<>();
 		globalVariables = new Scope<>();
+		forkVariables = new Scope<>();
 		threadLocks = new ArrayList<>();
 		threadLocksForks = new ArrayList<>();
 	}
