@@ -312,8 +312,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Nop");
 
 		// wait until initialization complete
-		cmds.add("Load (ImmValue 0) regB");
-		cmds.add("TestAndSet (DirAddr 0)");
+		cmds.add("ReadInstr (DirAddr 0)");
 		cmds.add("Receive regA");
 		cmds.add("Branch regA (Rel (-2))");
 
@@ -336,11 +335,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitJoinStat(JoinStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		cmds.add("Load (ImmValue 0) regB");
 		// add loops that check whether the given threads have set their locks to 0
 		// (i.e. finished their execution)
 		for (int memAddr : threadLocks) {
-			cmds.add("TestAndSet (DirAddr " + memAddr + ")");
+			cmds.add("ReadInstr (DirAddr " + memAddr + ")");
 			cmds.add("Receive regA");
 			cmds.add("Branch regA (Rel (-2))");
 		}
