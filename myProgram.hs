@@ -1,95 +1,133 @@
 import Sprockell
 
 prog :: [Instruction]
-prog = [ Branch regSprID (Rel 36)
+prog = [ Branch regSprID (Rel 127)
        , Load (ImmValue 1) regA
        , WriteInstr regA (DirAddr 0)
        , Load (ImmValue 0) regA
        , Push regA
        , Pop regA
-       , WriteInstr regA (DirAddr 1)
+       , Store regA (DirAddr 0)
+       , Load (ImmValue 5) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 2)
+       , Load (ImmValue 4) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 3)
+       , Load (ImmValue 3) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 4)
+       , Load (ImmValue 2) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 5)
+       , Load (ImmValue 1) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 6)
+       , Load (ImmValue 5) regA
+       , Push regA
+       , Load (ImmValue 3) regA
+       , Push regA
+       , Load (ImmValue 2) regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute Mul regA regB regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute Add regA regB regA
+       , Push regA
+       , Load (ImmValue 4) regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute Sub regA regB regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 0)
        , Load (ImmValue 0) regA
        , Push regA
        , Pop regA
-       , WriteInstr regA (DirAddr 2)
-       , Load (ImmValue 0) regA
+       , Store regA (DirAddr 6)
+       , Load (ImmValue 1) regA
        , Push regA
        , Pop regA
-       , WriteInstr regA (DirAddr 3)
-       , Load (ImmValue 0) regA
-       , WriteInstr regA (DirAddr 0)
-       , ReadInstr (DirAddr 6)
-       , Receive regA
-       , Branch regA (Rel (-2))
-       , ReadInstr (DirAddr 2)
-       , Receive regA
+       , Store regA (DirAddr 6)
+       , Load (DirAddr 6) regA
        , Push regA
-       , ReadInstr (DirAddr 3)
-       , Receive regA
+       , Load (ImmValue 5) regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute LtE regA regB regA
+       , Push regA
+       , Pop regB
+       , Load (ImmValue 0) regA
+       , Compute Equal regA regB regB
+       , Branch regB (Rel 33)
+       , Load (DirAddr 0) regA
+       , Push regA
+       , Load (DirAddr 6) regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute Equal regA regB regA
+       , Push regA
+       , Pop regB
+       , Load (ImmValue 0) regA
+       , Compute Equal regA regB regB
+       , Branch regB (Rel 6)
+       , Load (ImmValue 1) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 0)
+       , Jump (Rel 5)
+       , Load (ImmValue 3) regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 0)
+       , Load (DirAddr 6) regA
+       , Push regA
+       , Load (ImmValue 1) regA
        , Push regA
        , Pop regB
        , Pop regA
        , Compute Add regA regB regA
        , Push regA
        , Pop regA
-       , WriteInstr regA (DirAddr 1)
-       , ReadInstr (DirAddr 1)
-       , Receive regA
+       , Store regA (DirAddr 6)
+       , Jump (Rel (-43))
+       , Load (DirAddr 0) regA
+       , Push regA
+       , Load (ImmValue 5) regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute Lt regA regB regA
+       , Push regA
+       , Pop regB
+       , Load (ImmValue 0) regA
+       , Compute Equal regA regB regB
+       , Branch regB (Rel 12)
+       , Load (DirAddr 0) regA
+       , Push regA
+       , Load (ImmValue 1) regA
+       , Push regA
+       , Pop regB
+       , Pop regA
+       , Compute Add regA regB regA
+       , Push regA
+       , Pop regA
+       , Store regA (DirAddr 0)
+       , Jump (Rel (-22))
+       , Load (DirAddr 0) regA
        , WriteInstr regA numberIO
-       , EndProg
-       , Load (ImmValue 1) regA
-       , Compute Equal regSprID regA regC
-       , Branch regC (Rel 7)
-       , Load (ImmValue 2) regA
-       , Compute Equal regSprID regA regC
-       , Branch regC (Rel 18)
-       , Load (ImmValue 3) regA
-       , Compute Equal regSprID regA regC
-       , Branch regC (Rel 31)
-       , Load (ImmValue 1) regA
-       , WriteInstr regA (DirAddr 4)
-       , Nop
-       , Nop
-       , ReadInstr (DirAddr 0)
-       , Receive regA
-       , Branch regA (Rel (-2))
-       , Load (ImmValue 2) regA
-       , Push regA
-       , Pop regA
-       , WriteInstr regA (DirAddr 2)
-       , Load (ImmValue 0) regA
-       , WriteInstr regA (DirAddr 4)
-       , EndProg
-       , Load (ImmValue 1) regA
-       , WriteInstr regA (DirAddr 6)
-       , Nop
-       , Nop
-       , ReadInstr (DirAddr 0)
-       , Receive regA
-       , Branch regA (Rel (-2))
-       , ReadInstr (DirAddr 4)
-       , Receive regA
-       , Branch regA (Rel (-2))
-       , ReadInstr (DirAddr 5)
-       , Receive regA
-       , Branch regA (Rel (-2))
-       , Load (ImmValue 0) regA
-       , WriteInstr regA (DirAddr 6)
-       , EndProg
-       , Load (ImmValue 1) regA
-       , WriteInstr regA (DirAddr 5)
-       , Nop
-       , Nop
-       , ReadInstr (DirAddr 0)
-       , Receive regA
-       , Branch regA (Rel (-2))
-       , Load (ImmValue 3) regA
-       , Push regA
-       , Pop regA
-       , WriteInstr regA (DirAddr 3)
-       , Load (ImmValue 0) regA
-       , WriteInstr regA (DirAddr 5)
        , EndProg
        ]
 
-main = run [prog,prog,prog,prog]
+main = run [prog]

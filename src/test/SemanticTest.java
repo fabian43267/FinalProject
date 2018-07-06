@@ -84,6 +84,11 @@ public class SemanticTest {
         new SprilGenerator().generate(new File(DIR + "program13.txt").toPath());
     }
 
+    @Test // 15
+    public void generateProgram14() {
+        new SprilGenerator().generate(new File(DIR + "program14.txt").toPath());
+    }
+
     @Test // 8
     public void generatePetersonsAlgorithm() {
         new SprilGenerator().generate(new File(DIR + "petersons_algorithm.txt").toPath());

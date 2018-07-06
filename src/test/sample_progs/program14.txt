@@ -1,0 +1,14 @@
+char c = 'c'
+char a = 'a'
+int d = 5
+int g = 10
+int e = -25
+
+g = g ^ 2
+g = g + e
+
+if (a < c) {
+    d = g / d
+}
+
+print d

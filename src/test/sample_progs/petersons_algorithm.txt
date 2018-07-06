@@ -9,6 +9,7 @@ fork {
     turn = 1
     while (flag1 == true && turn == 1) {
         z = 0
+        #hi#
     }
 
     a = a * 2
