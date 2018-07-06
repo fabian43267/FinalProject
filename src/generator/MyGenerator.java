@@ -413,7 +413,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 		commands.put(ctx, cmds);
 	}
-	
+
 	public void exitCommentStat(CommentStatContext ctx) {
 		commands.put(ctx, new ArrayList<String>());
 	}
@@ -431,7 +431,9 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitBlock(BlockContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		for (StatementContext bla : ctx.statement()) {
-			cmds.addAll(commands.get(bla));
+			if (!forks.containsKey(bla)) {
+				cmds.addAll(commands.get(bla));
+			}
 		}
 		commands.put(ctx, cmds);
 		scope.closeScope();
@@ -472,7 +474,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 			cmds.add("Compute " + (ctx.getChild(i).getText().equals("&&") ? "And" : "Or") + " regA regB regA");
 			i += 2;
 		}
-		
+
 		cmds.add("Push regA");
 		commands.put(ctx, cmds);
 	}
@@ -530,10 +532,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		ArrayList<String> cmds = new ArrayList<>();
 		cmds.addAll(commands.get(ctx.expo()));
 		cmds.addAll(commands.get(ctx.term()));
-		cmds.add("Pop regB");                   // regB is the divisor
-		cmds.add("Pop regA");                   // regA is the dividend
-		cmds.add("Load (ImmValue 0) regC");     // regC counts the iterations, so it will be the actual result
-		cmds.add("Compute Lt regA regB regD");  // regD is just used for comparing and branching
+		cmds.add("Pop regB"); // regB is the divisor
+		cmds.add("Pop regA"); // regA is the dividend
+		cmds.add("Load (ImmValue 0) regC"); // regC counts the iterations, so it will be the actual result
+		cmds.add("Compute Lt regA regB regD"); // regD is just used for comparing and branching
 		cmds.add("Branch regD (Rel 4)");
 		cmds.add("Compute Sub regA regB regA");
 		cmds.add("Compute Incr regC regC regC");
