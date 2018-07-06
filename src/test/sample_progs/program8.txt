@@ -1,0 +1,8 @@
+bool truthTable = [true, true, true, true, false, true]
+int i = 0
+
+while(truthTable[i] == true) {
+    i = i + 1
+}
+
+print i

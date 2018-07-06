@@ -14,3 +14,5 @@ fork {
   bool b = true
   char d = 'd'
 }
+print a
+print i

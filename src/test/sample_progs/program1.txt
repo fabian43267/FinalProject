@@ -3,3 +3,4 @@ int result = 0
 for (int i = 0; i < j; i = i + 1) {
     result = result + j * i
 }
+print result
