@@ -52,14 +52,14 @@ public class MyGenerator extends MyGrammarBaseListener {
 	private ParseTreeProperty<ArrayList<String>> commands;
 	private HashMap<ParseTree, ArrayList<String>> forks;
 	private ArrayList<String> cmdsList;
-	private Scope<Integer> variables;     // variable name and address
-	private Scope<Integer> forkVariables;      // variables for forking
+	private Scope<Integer> variables; // variable name and address
+	private Scope<Integer> forkVariables; // variables for forking
 	private Scope<Integer> globalVariables; // same as variables, just global
 	private ArrayList<Integer> threadLocks;
 	private ArrayList<Integer> threadLocksForks;
 	private int addrTop, globalMemOffset;
 	private File file;
-	private boolean insideFork = false;
+	private int forkingLevel = 0;
 
 	public MyGenerator() {
 		commands = new ParseTreeProperty<>();
@@ -147,7 +147,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Pop regA");
 
 		if (ctx.GLOBAL() == null) {
-			if (insideFork) {
+			if (forkingLevel > 0) {
 				forkVariables.addVariable(ctx.ID().getText(), addrTop);
 			} else {
 				variables.addVariable(ctx.ID().getText(), addrTop);
@@ -173,7 +173,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 		cmds.add("Pop regA");
 
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			if (forkVariables.isDefined(ctx.ID().getText())) {
 				cmds.add("Store regA (DirAddr " + forkVariables.getData(ctx.ID().getText()) + ")");
 			} else {
@@ -192,7 +192,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		Scope<Integer> vars;
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			vars = forkVariables;
 		} else {
 			vars = variables;
@@ -219,7 +219,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.addAll(commands.get(ctx.expr(0)));
 		cmds.add("Pop regA");
 
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			cmds.add("Load (ImmValue " + forkVariables.getData(ctx.ID().getText()) + ") regB");
 		} else {
 			cmds.add("Load (ImmValue " + variables.getData(ctx.ID().getText()) + ") regB");
@@ -295,7 +295,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	}
 
 	public void enterForkStat(ForkStatContext ctx) {
-		insideFork = true;
+		forkingLevel += 1;
 		forkVariables.openScope();
 	}
 
@@ -325,10 +325,15 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
 
 		// store memory address for the join and increase memory offset
-		threadLocks.add(globalMemOffset);
+		if (forkingLevel > 1) {
+			threadLocksForks.add(globalMemOffset);
+		} else {
+			threadLocksForks.add(globalMemOffset);
+		}
 		globalMemOffset += 1;
 
-		insideFork = false;
+		forkingLevel -= 1;
+		forkVariables.closeScope();
 		forks.put(ctx, cmds);
 	}
 
@@ -336,9 +341,16 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitJoinStat(JoinStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
+		ArrayList<Integer> locks;
+		if (forkingLevel > 0) {
+			locks = threadLocksForks;
+		} else {
+			locks = threadLocks;
+		}
+
 		// add loops that check whether the given threads have set their locks to 0
 		// (i.e. finished their execution)
-		for (int memAddr : threadLocks) {
+		for (int memAddr : locks) {
 			cmds.add("ReadInstr (DirAddr " + memAddr + ")");
 			cmds.add("Receive regA");
 			cmds.add("Branch regA (Rel (-2))");
@@ -358,7 +370,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitPrintStat(PrintStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			if (forkVariables.isDefined(ctx.ID().getText())) {
 				cmds.add("Load (DirAddr " + forkVariables.getData(ctx.ID().getText()) + ") regA");
 			} else {
@@ -382,7 +394,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitPrintStatArray(PrintStatArrayContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			if (forkVariables.isDefined(ctx.ID().getText())) {
 				// calculate address in memory
 				cmds.addAll(commands.get(ctx.expr()));
@@ -606,7 +618,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitVarFactor(VarFactorContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			if (forkVariables.isDefined(ctx.ID().getText())) {
 				cmds.add("Load (DirAddr " + forkVariables.getData(ctx.ID().getText()) + ") regA");
 			} else {
@@ -632,7 +644,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.addAll(commands.get(ctx.expr()));
 		cmds.add("Pop regA");
 
-		if (insideFork) {
+		if (forkingLevel > 0) {
 			cmds.add("Load (ImmValue " + forkVariables.getData(ctx.ID().getText()) + ") regB");
 		} else {
 			cmds.add("Load (ImmValue " + variables.getData(ctx.ID().getText()) + ") regB");
