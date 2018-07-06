@@ -328,7 +328,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		if (forkingLevel > 1) {
 			threadLocksForks.add(globalMemOffset);
 		} else {
-			threadLocksForks.add(globalMemOffset);
+			threadLocks.add(globalMemOffset);
 		}
 		globalMemOffset += 1;
 
@@ -357,7 +357,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		}
 
 		// reset list of memory addresses
-		threadLocks = new ArrayList<>();
+		locks = new ArrayList<>();
 
 		commands.put(ctx, cmds);
 	}
