@@ -1,6 +1,6 @@
 package test;
 
-import main.SprilGenerator;
+import generator.SprilGenerator;
 import org.junit.Test;
 
 import java.io.File;

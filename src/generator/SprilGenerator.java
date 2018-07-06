@@ -1,4 +1,4 @@
-package main;
+package generator;
 
 import checker.Checker;
 import generator.MyGenerator;
