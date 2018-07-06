@@ -251,9 +251,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitIfStat(IfStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		cmds.addAll(commands.get(ctx.comp()));
+		cmds.add("Pop regB");
 		cmds.add("Load (ImmValue 0) regA");
-		cmds.add("Compute Equal regA regC regC");
-		cmds.add("Branch regC (Rel " + (commands.get(ctx.block(0)).size() + 2) + ")");
+		cmds.add("Compute Equal regA regB regB");
+		cmds.add("Branch regB (Rel " + (commands.get(ctx.block(0)).size() + 2) + ")");
 		cmds.addAll(commands.get(ctx.block(0)));
 
 		if (ctx.block().size() == 2) {
@@ -268,9 +269,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitWhileStat(WhileStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		cmds.addAll(commands.get(ctx.comp()));
+		cmds.add("Pop regB");
 		cmds.add("Load (ImmValue 0) regA");
-		cmds.add("Compute Equal regA regC regC");
-		cmds.add("Branch regC (Rel " + String.valueOf(commands.get(ctx.block()).size() + 2) + ")");
+		cmds.add("Compute Equal regA regB regB");
+		cmds.add("Branch regB (Rel " + String.valueOf(commands.get(ctx.block()).size() + 2) + ")");
 		cmds.addAll(commands.get(ctx.block()));
 		cmds.add("Jump (Rel (-" + String.valueOf(cmds.size()) + "))");
 		commands.put(ctx, cmds);
@@ -281,9 +283,10 @@ public class MyGenerator extends MyGrammarBaseListener {
 		ArrayList<String> cmds = new ArrayList<>();
 		cmds.addAll(commands.get(ctx.assignment()));
 		cmds.addAll(commands.get(ctx.comp()));
+		cmds.add("Pop regB");
 		cmds.add("Load (ImmValue 0) regA");
-		cmds.add("Compute Equal regA regC regC");
-		cmds.add("Branch regC (Rel "
+		cmds.add("Compute Equal regA regB regB");
+		cmds.add("Branch regB (Rel "
 				+ String.valueOf(commands.get(ctx.block()).size() + commands.get(ctx.expr()).size() + 2) + ")");
 		cmds.addAll(commands.get(ctx.block()));
 		cmds.addAll(commands.get(ctx.expr()));
