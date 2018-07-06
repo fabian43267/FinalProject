@@ -4,3 +4,4 @@ if (a != 1) {
 } else {
   a = 45
 }
+print a

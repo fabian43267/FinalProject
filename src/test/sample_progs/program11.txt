@@ -1,0 +1,28 @@
+global int a = 0
+global int t = 9
+global int f = 9
+global int p = 9
+int g = 5
+
+fork {
+    int b = 0
+    while (b < 2000) {
+        b = b + 1
+    }
+    t = 1
+}
+
+
+fork {
+    f = 7
+}
+
+fork {
+    p = 20
+}
+
+join
+
+a = t + f + p
+
+print a

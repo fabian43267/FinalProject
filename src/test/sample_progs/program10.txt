@@ -1,0 +1,14 @@
+global int a = 5
+
+
+fork {
+    print a
+    a = 1
+    print a
+}
+
+fork {
+    a = 2
+}
+
+print a
