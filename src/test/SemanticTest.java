@@ -7,7 +7,7 @@ import java.io.File;
 
 public class SemanticTest {
 
-    private final static String DIR = "/Users/ducu97/IntelliJProjects/FinalProject/src/test/sample_progs/";
+    private final static String DIR = "src/test/sample_progs/";
 
     /**
      * Class that generates the code for each program sample we've made.

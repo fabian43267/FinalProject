@@ -30,7 +30,7 @@ public class SyntaxTest {
     }
 
     private List<String> analyzeSyntax(String file) {
-        String dir = "/Users/ducu97/IntelliJProjects/FinalProject/src/test/sample_progs/";
+        String dir = "src/test/sample_progs/";
         Path progPath = new File(dir + file).toPath();
         MyErrorListener err = new MyErrorListener();
 

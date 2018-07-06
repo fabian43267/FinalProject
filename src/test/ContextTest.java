@@ -10,7 +10,7 @@ import checker.Checker;
 
 public class ContextTest {
 	
-	public final static String PROG_DIR = "/Users/ducu97/IntelliJProjects/FinalProject/src/test/sample_progs/";
+	public final static String PROG_DIR = "src/test/sample_progs/";
 
 	@Test
 	public void testCorrectProgs() {
