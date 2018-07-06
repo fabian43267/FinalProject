@@ -54,7 +54,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	private HashMap<String, Integer> forkVariables; // variables for forking
 	private HashMap<String, Integer> globalVariables; // same as variables, just global
 	private ArrayList<Integer> threadLocks;
-	private int addrTop, globalMemOffset;
+	private int addrTop, globalMemOffset, memAddrInitFlag;
 	private Scope scope;
 	private File file;
 	private boolean useForkMap = false;
@@ -63,13 +63,71 @@ public class MyGenerator extends MyGrammarBaseListener {
 		commands = new ParseTreeProperty<>();
 		variables = new HashMap<>();
 		addrTop = 0;
-		globalMemOffset = 0;
+		globalMemOffset = 1;
 		scope = new Scope();
 		forks = new HashMap<>();
 		globalVariables = new HashMap<>();
 		threadLocks = new ArrayList<>();
 	}
 
+	// ------------------------------------------
+	// ------------- Program --------------------
+	// ------------------------------------------
+	
+	@Override
+	public void exitProgram(ProgramContext ctx) {
+		ArrayList<String> cmds = new ArrayList<>();
+
+		// Concatenate all statements (except forks of course) to make main block
+		// Also, set init flag when first fork occurs
+		ArrayList<String> mainBlock = new ArrayList<>();
+		
+		mainBlock.add("Load (ImmValue 1) regA");
+		mainBlock.add("WriteInstr regA (DirAddr 0)");
+		
+		boolean noFork = true;
+		
+		for (StatementContext bla : ctx.statement()) {
+			if (!forks.containsKey(bla)) {
+				mainBlock.addAll(commands.get(bla));
+			} else {
+				if (noFork) {
+					mainBlock.add("Load (ImmValue 0) regA");
+					mainBlock.add("WriteInstr regA (DirAddr 0)");
+					noFork = false;
+				}
+			}
+		}
+		mainBlock.add("EndProg");
+
+		// Concatenate all fork blocks with EndProg at the end and keep track of
+		// offsets for jumping to the right thread
+		ArrayList<String> forkBlock = new ArrayList<>();
+		ArrayList<Integer> offsets = new ArrayList<>();
+		for (ArrayList<String> f : forks.values()) {
+			offsets.add(forkBlock.size());
+			forkBlock.addAll(f);
+			forkBlock.add("EndProg");
+		}
+
+		// Build jump instructions
+		ArrayList<String> jumps = new ArrayList<>();
+		for (int i = 0; i < offsets.size(); i++) {
+			jumps.add("Load (ImmValue " + (i + 1) + ") regA");
+			jumps.add("Compute Equal regSprID regA regC");
+			jumps.add("Branch regC (Rel " + (((offsets.size() - (i + 1)) * 3) + offsets.get(i) + 1) + ")");
+		}
+
+		// Build program from blocks
+		cmds.add("Branch regSprID (Rel " + (mainBlock.size() + 1) + ")");
+		cmds.addAll(mainBlock);
+		cmds.addAll(jumps);
+		cmds.addAll(forkBlock);
+
+		commands.put(ctx, cmds);
+		cmdsList = cmds;
+	}
+	
 	// ------------------------------------------
 	// ----------- Assignments ------------------
 	// ------------------------------------------
@@ -174,51 +232,6 @@ public class MyGenerator extends MyGrammarBaseListener {
 	}
 
 	// ------------------------------------------
-	// ------------- Program --------------------
-	// ------------------------------------------
-
-	@Override
-	public void exitProgram(ProgramContext ctx) {
-		ArrayList<String> cmds = new ArrayList<>();
-
-		// Concatenate all statements (except forks of course) to make main block
-		ArrayList<String> mainBlock = new ArrayList<>();
-		for (StatementContext bla : ctx.statement()) {
-			if (!forks.containsKey(bla)) {
-				mainBlock.addAll(commands.get(bla));
-			}
-		}
-		mainBlock.add("EndProg");
-
-		// Concatenate all fork blocks with EndProg at the end and keep track of
-		// offsets for jumping to the right thread
-		ArrayList<String> forkBlock = new ArrayList<>();
-		ArrayList<Integer> offsets = new ArrayList<>();
-		for (ArrayList<String> f : forks.values()) {
-			offsets.add(forkBlock.size());
-			forkBlock.addAll(f);
-			forkBlock.add("EndProg");
-		}
-
-		// Build jump instructions
-		ArrayList<String> jumps = new ArrayList<>();
-		for (int i = 0; i < offsets.size(); i++) {
-			jumps.add("Load (ImmValue " + (i + 1) + ") regA");
-			jumps.add("Compute Equal regSprID regA regC");
-			jumps.add("Branch regC (Rel " + (((offsets.size() - (i + 1)) * 3) + offsets.get(i) + 1) + ")");
-		}
-
-		// Build program from blocks
-		cmds.add("Branch regSprID (Rel " + (mainBlock.size() + 1) + ")");
-		cmds.addAll(mainBlock);
-		cmds.addAll(jumps);
-		cmds.addAll(forkBlock);
-
-		commands.put(ctx, cmds);
-		cmdsList = cmds;
-	}
-
-	// ------------------------------------------
 	// ------------- Statement ------------------
 	// ------------------------------------------
 
@@ -278,6 +291,15 @@ public class MyGenerator extends MyGrammarBaseListener {
 		// load 1 into shared memory ( 1 = not finished execution )
 		cmds.add("Load (ImmValue 1) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
+		
+		// do nothing for two clock cycles to make sure that the initialization has been set by the main thread
+		cmds.add("Nop");
+		cmds.add("Nop");
+		
+		// wait until initialization complete
+		cmds.add("ReadInstr (DirAddr 0");
+		cmds.add("Receive regA");
+		cmds.add("Branch regA (Rel (-2))");
 		
 		// actual code that thread executes
 		cmds.addAll(commands.get(ctx.block()));
