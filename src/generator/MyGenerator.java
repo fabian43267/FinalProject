@@ -491,8 +491,21 @@ public class MyGenerator extends MyGrammarBaseListener {
 	// ------------------------------------------
 
 	public void exitExpExpo(ExpExpoContext ctx) {
-		// TODO that's gonna be quite nasty...
-		// maybe a loop that counts down and then multiplying or something
+		ArrayList<String> cmds = new ArrayList<>();
+		
+		cmds.addAll(commands.get(ctx.expo()));
+		cmds.addAll(commands.get(ctx.factor()));
+		cmds.add("Load (ImmValue 1) regD");      // regD contains 1 for decrementing the counter
+		cmds.add("Pop regB");                    // regB contains factor
+		cmds.add("Load (IndAddr regB) regA");    // regA contains the actual result
+		cmds.add("Pop regC");                    // regC contains the counter
+		cmds.add("Branch regC (Rel 4)");
+		cmds.add("Compute Mul regA regB regA");
+		cmds.add("Compute Sub regC regD regC");
+		cmds.add("Jump (Rel (-2))");
+		cmds.add("Push regA");
+		
+		commands.put(ctx, cmds);
 	}
 
 	public void exitFactorExpo(FactorExpoContext ctx) {
