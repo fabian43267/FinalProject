@@ -20,7 +20,6 @@ import grammar.MyGrammarParser.AssignExprContext;
 import grammar.MyGrammarParser.BlockContext;
 import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
-import grammar.MyGrammarParser.CommentContext;
 import grammar.MyGrammarParser.CommentStatContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
@@ -529,7 +528,17 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	public void exitDivTerm(DivTermContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		// TODO
+		cmds.addAll(commands.get(ctx.expo()));
+		cmds.addAll(commands.get(ctx.term()));
+		cmds.add("Pop regB");                   // regB is the divisor
+		cmds.add("Pop regA");                   // regA is the dividend
+		cmds.add("Load (ImmValue 0) regC");     // regC counts the iterations, so it will be the actual result
+		cmds.add("Compute Lt regA regB regD");  // regD is just used for comparing and branching
+		cmds.add("Branch regD (Rel 4)");
+		cmds.add("Compute Sub regA regB regA");
+		cmds.add("Compute Incr regC regC regC");
+		cmds.add("Jump (Rel (-4))");
+		cmds.add("Push regC");
 		commands.put(ctx, cmds);
 	}
 
