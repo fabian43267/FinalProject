@@ -315,7 +315,6 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Load (ImmValue 0) regB");
 		cmds.add("TestAndSet (DirAddr 0)");
 		cmds.add("Receive regA");
-		cmds.add("Compute And regA regB regA");
 		cmds.add("Branch regA (Rel (-3))");
 
 		// actual code that thread executes
@@ -343,7 +342,6 @@ public class MyGenerator extends MyGrammarBaseListener {
 		for (int memAddr : threadLocks) {
 			cmds.add("TestAndSet (DirAddr " + memAddr + ")");
 			cmds.add("Receive regA");
-			cmds.add("Compute And regA regB regA");
 			cmds.add("Branch regA (Rel (-3))");
 		}
 
