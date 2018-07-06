@@ -22,6 +22,7 @@ import grammar.MyGrammarParser.BoolFactorContext;
 import grammar.MyGrammarParser.CharFactorContext;
 import grammar.MyGrammarParser.CompContext;
 import grammar.MyGrammarParser.DeclAssignContext;
+import grammar.MyGrammarParser.DivTermContext;
 import grammar.MyGrammarParser.ExpExpoContext;
 import grammar.MyGrammarParser.ExpoTermContext;
 import grammar.MyGrammarParser.ExprContext;
@@ -54,7 +55,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	private HashMap<String, Integer> forkVariables; // variables for forking
 	private HashMap<String, Integer> globalVariables; // same as variables, just global
 	private ArrayList<Integer> threadLocks;
-	private int addrTop, globalMemOffset, memAddrInitFlag;
+	private int addrTop, globalMemOffset;
 	private Scope scope;
 	private File file;
 	private boolean useForkMap = false;
@@ -73,7 +74,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 	// ------------------------------------------
 	// ------------- Program --------------------
 	// ------------------------------------------
-	
+
 	@Override
 	public void exitProgram(ProgramContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
@@ -81,12 +82,12 @@ public class MyGenerator extends MyGrammarBaseListener {
 		// Concatenate all statements (except forks of course) to make main block
 		// Also, set init flag when first fork occurs
 		ArrayList<String> mainBlock = new ArrayList<>();
-		
+
 		mainBlock.add("Load (ImmValue 1) regA");
 		mainBlock.add("WriteInstr regA (DirAddr 0)");
-		
+
 		boolean noFork = true;
-		
+
 		for (StatementContext bla : ctx.statement()) {
 			if (!forks.containsKey(bla)) {
 				mainBlock.addAll(commands.get(bla));
@@ -127,7 +128,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		commands.put(ctx, cmds);
 		cmdsList = cmds;
 	}
-	
+
 	// ------------------------------------------
 	// ----------- Assignments ------------------
 	// ------------------------------------------
@@ -136,7 +137,11 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitDeclAssign(DeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		cmds.addAll(commands.get(ctx.expr()));
+		if (ctx.expr() == null) {
+			cmds.addAll(commands.get(ctx.comp()));
+		} else {
+			cmds.addAll(commands.get(ctx.expr()));
+		}
 		cmds.add("Pop regA");
 
 		if (ctx.GLOBAL() == null) {
@@ -159,7 +164,11 @@ public class MyGenerator extends MyGrammarBaseListener {
 	public void exitVarAssign(VarAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 
-		cmds.addAll(commands.get(ctx.expr()));
+		if (ctx.expr() == null) {
+			cmds.addAll(commands.get(ctx.comp()));
+		} else {
+			cmds.addAll(commands.get(ctx.expr()));
+		}
 		cmds.add("Pop regA");
 
 		if (useForkMap) {
@@ -180,23 +189,20 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-
+		HashMap<String, Integer> vars;
 		if (useForkMap) {
-			forkVariables.put(ctx.ID().getText(), addrTop);
-
-			for (ExprContext expr : ctx.expr()) {
-				cmds.addAll(commands.get(expr));
-				cmds.add("Pop regA");
-				cmds.add("Store regA (DirAddr " + (forkVariables.get(ctx.ID().getText()) + addrTop) + ")");
-				addrTop += 1;
-			}
+			vars = forkVariables;
 		} else {
-			variables.put(ctx.ID().getText(), addrTop);
+			vars = variables;
+		}
 
-			for (ExprContext expr : ctx.expr()) {
-				cmds.addAll(commands.get(expr));
+		vars.put(ctx.ID().getText(), addrTop);
+
+		for (ParseTree elem : ctx.children) {
+			if (elem instanceof ExprContext || elem instanceof CompContext) {
+				cmds.addAll(commands.get(elem));
 				cmds.add("Pop regA");
-				cmds.add("Store regA (DirAddr " + (variables.get(ctx.ID().getText()) + addrTop) + ")");
+				cmds.add("Store regA (DirAddr " + (vars.get(ctx.ID().getText()) + addrTop) + ")");
 				addrTop += 1;
 			}
 		}
@@ -220,7 +226,11 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Push regA");
 
 		// calculate expr
-		cmds.addAll(commands.get(ctx.expr(1)));
+		if (ctx.expr(1) == null) {
+			cmds.addAll(commands.get(ctx.comp()));
+		} else {
+			cmds.addAll(commands.get(ctx.expr(1)));
+		}
 
 		cmds.add("Pop regA"); // pop result of expr
 		cmds.add("Pop regB"); // pop address
@@ -287,31 +297,32 @@ public class MyGenerator extends MyGrammarBaseListener {
 	@Override
 	public void exitForkStat(ForkStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		
+
 		// load 1 into shared memory ( 1 = not finished execution )
 		cmds.add("Load (ImmValue 1) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
-		
-		// do nothing for two clock cycles to make sure that the initialization has been set by the main thread
+
+		// do nothing for two clock cycles to make sure that the initialization has been
+		// set by the main thread
 		cmds.add("Nop");
 		cmds.add("Nop");
-		
+
 		// wait until initialization complete
 		cmds.add("ReadInstr (DirAddr 0)");
 		cmds.add("Receive regA");
 		cmds.add("Branch regA (Rel (-2))");
-		
+
 		// actual code that thread executes
 		cmds.addAll(commands.get(ctx.block()));
-		
+
 		// load 0 into shared memory ( 0 = finished execution )
 		cmds.add("Load (ImmValue 0) regA");
 		cmds.add("WriteInstr regA (DirAddr " + globalMemOffset + ")");
-		
+
 		// store memory address for the join and increase memory offset
 		threadLocks.add(globalMemOffset);
 		globalMemOffset += 1;
-		
+
 		useForkMap = false;
 		forks.put(ctx, cmds);
 	}
@@ -319,17 +330,18 @@ public class MyGenerator extends MyGrammarBaseListener {
 	@Override
 	public void exitJoinStat(JoinStatContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		
-		// add loops that check whether the given threads have set their locks to 0 (i.e. finished their execution)
+
+		// add loops that check whether the given threads have set their locks to 0
+		// (i.e. finished their execution)
 		for (int memAddr : threadLocks) {
 			cmds.add("ReadInstr (DirAddr " + memAddr + ")");
 			cmds.add("Receive regA");
 			cmds.add("Branch regA (Rel (-2))");
 		}
-		
+
 		// reset list of memory addresses
 		threadLocks = new ArrayList<>();
-		
+
 		commands.put(ctx, cmds);
 	}
 
@@ -441,7 +453,19 @@ public class MyGenerator extends MyGrammarBaseListener {
 		} else if (op.equals("<")) {
 			cmp = "Lt";
 		}
-		cmds.add("Compute " + cmp + " regA regB regC");
+		cmds.add("Compute " + cmp + " regA regB regA");
+
+		int i = 3;
+		for (CompContext c : ctx.comp()) {
+			cmds.add("Push regA");
+			cmds.addAll(commands.get(c));
+			cmds.add("Pop regB");
+			cmds.add("Pop regA");
+			cmds.add("Compute " + (ctx.getChild(i).getText().equals("&&") ? "And" : "Or") + " regA regB regA");
+			i += 2;
+		}
+		
+		cmds.add("Push regA");
 		commands.put(ctx, cmds);
 	}
 
@@ -494,6 +518,12 @@ public class MyGenerator extends MyGrammarBaseListener {
 		commands.put(ctx, cmds);
 	}
 
+	public void exitDivTerm(DivTermContext ctx) {
+		ArrayList<String> cmds = new ArrayList<>();
+		// TODO
+		commands.put(ctx, cmds);
+	}
+
 	public void exitNegTerm(NegTermContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
 		cmds.addAll(commands.get(ctx.term()));
@@ -514,19 +544,19 @@ public class MyGenerator extends MyGrammarBaseListener {
 
 	public void exitExpExpo(ExpExpoContext ctx) {
 		ArrayList<String> cmds = new ArrayList<>();
-		
+
 		cmds.addAll(commands.get(ctx.expo()));
 		cmds.addAll(commands.get(ctx.factor()));
-		cmds.add("Load (ImmValue 1) regD");      // regD contains 1 for decrementing the counter
-		cmds.add("Pop regB");                    // regB contains factor
-		cmds.add("Load (IndAddr regB) regA");    // regA contains the actual result
-		cmds.add("Pop regC");                    // regC contains the counter
+		cmds.add("Load (ImmValue 1) regD"); // regD contains 1 for decrementing the counter
+		cmds.add("Pop regB"); // regB contains factor
+		cmds.add("Load (IndAddr regB) regA"); // regA contains the actual result
+		cmds.add("Pop regC"); // regC contains the counter
 		cmds.add("Branch regC (Rel 4)");
 		cmds.add("Compute Mul regA regB regA");
 		cmds.add("Compute Sub regC regD regC");
 		cmds.add("Jump (Rel (-2))");
 		cmds.add("Push regA");
-		
+
 		commands.put(ctx, cmds);
 	}
 

@@ -209,6 +209,18 @@ public interface MyGrammarListener extends ParseTreeListener {
 	 */
 	void exitWhileStat(@NotNull MyGrammarParser.WhileStatContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code divTerm}
+	 * labeled alternative in {@link MyGrammarParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterDivTerm(@NotNull MyGrammarParser.DivTermContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code divTerm}
+	 * labeled alternative in {@link MyGrammarParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitDivTerm(@NotNull MyGrammarParser.DivTermContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ifStat}
 	 * labeled alternative in {@link MyGrammarParser#statement}.
 	 * @param ctx the parse tree

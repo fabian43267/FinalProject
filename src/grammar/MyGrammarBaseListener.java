@@ -221,6 +221,18 @@ public class MyGrammarBaseListener implements MyGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDivTerm(@NotNull MyGrammarParser.DivTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDivTerm(@NotNull MyGrammarParser.DivTermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIfStat(@NotNull MyGrammarParser.IfStatContext ctx) { }
 	/**
 	 * {@inheritDoc}

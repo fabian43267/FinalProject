@@ -160,6 +160,21 @@ public class Checker extends MyGrammarBaseListener {
 	}
 
 	@Override
+	public void exitDivTerm(DivTermContext ctx) {
+		Type t1 = types.get(ctx.expo());
+		Type t2 = types.get(ctx.term());
+		if (t1 != null && t2 != null) {
+			if (t1 != Type.INT && t2 != Type.INT) {
+				Token token = ctx.DIV().getSymbol();
+				errors.add("Line " + token.getLine() + ", Position " + token.getCharPositionInLine()
+						+ ": Can only divide integers");
+			} else {
+				types.put(ctx, Type.INT);
+			}
+		}
+	}
+
+	@Override
 	public void exitNegTerm(NegTermContext ctx) {
 		Type t = types.get(ctx.term());
 		if (t != null) {
@@ -227,10 +242,18 @@ public class Checker extends MyGrammarBaseListener {
 
 	@Override
 	public void exitComp(CompContext ctx) {
-		Type t1 = types.get(ctx.getChild(0));
-		Type t2 = types.get(ctx.getChild(2));
+		Type t1 = types.get(ctx.expr(0));
+		Type t2 = types.get(ctx.expr(1));
+
+		boolean allCompsBool = true;
+		for (CompContext c : ctx.comp()) {
+			if (types.get(c) != null) {
+				allCompsBool = allCompsBool && types.get(c) == Type.BOOL;
+			}
+		}
+
 		if (t1 != null && t2 != null) {
-			if (t1 == t2) {
+			if (t1 == t2 && allCompsBool) {
 				types.put(ctx, Type.BOOL);
 			} else {
 				Token token = ctx.COMP().getSymbol();
@@ -258,7 +281,12 @@ public class Checker extends MyGrammarBaseListener {
 
 	public void exitDeclAssign(DeclAssignContext ctx) {
 		Type t1 = parseType(ctx.TYPE().getText());
-		Type t2 = types.get(ctx.expr());
+		Type t2;
+		if (ctx.expr() == null) {
+			t2 = types.get(ctx.comp());
+		} else {
+			t2 = types.get(ctx.expr());
+		}
 
 		if (t1 != null && t2 != null) {
 			if (t1 != t2) {
@@ -291,7 +319,12 @@ public class Checker extends MyGrammarBaseListener {
 			} else {
 				t1 = globalScope.getType(ctx.ID().getText());
 			}
-			Type t2 = types.get(ctx.expr());
+			Type t2;
+			if (ctx.expr() == null) {
+				t2 = types.get(ctx.comp());
+			} else {
+				t2 = types.get(ctx.expr());
+			}
 
 			if (t1 != t2) {
 				Token t = ctx.ID().getSymbol();
@@ -311,7 +344,12 @@ public class Checker extends MyGrammarBaseListener {
 		if (scope.isDefined(ctx.ID().getText())) {
 			Type t1 = scope.getType(ctx.ID().getText());
 			Type t2 = types.get(ctx.expr(0));
-			Type t3 = types.get(ctx.expr(1));
+			Type t3;
+			if (ctx.expr(1) == null) {
+				t3 = types.get(ctx.comp());
+			} else {
+				t3 = types.get(ctx.expr(1));
+			}
 
 			if (t2 != Type.INT) {
 				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
@@ -327,22 +365,24 @@ public class Checker extends MyGrammarBaseListener {
 	}
 
 	public void exitArrayDeclAssign(ArrayDeclAssignContext ctx) {
-		Type type = parseType(ctx.TYPE().getText());
+		Type t1 = parseType(ctx.TYPE().getText());
 
-		for (ExprContext expr : ctx.expr()) {
-			Type typeExpr = types.get(expr);
-			if (typeExpr == null) {
-				return;
-			}
-			if (typeExpr != type) {
-				Token t = ctx.ID().getSymbol();
-				errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
-						+ ": Elements assigned to the array should be of the same type as the array");
-				return;
+		for (ParseTree elem : ctx.children) {
+			if (elem instanceof ExprContext || elem instanceof CompContext) {
+				Type t2 = types.get(elem);
+				if (t2 == null) {
+					return;
+				}
+				if (t1 != t2) {
+					Token t = ctx.ID().getSymbol();
+					errors.add("Line " + t.getLine() + ", Position " + t.getCharPositionInLine()
+							+ ": Elements assigned to the array should be of the same type as the array");
+					return;
+				}
 			}
 		}
 
-		scope.addVariable(ctx.ID().getText(), type);
+		scope.addVariable(ctx.ID().getText(), t1);
 	}
 
 	// --------------------------------------------------------------

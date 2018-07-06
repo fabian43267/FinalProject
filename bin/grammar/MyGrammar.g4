@@ -2,10 +2,10 @@ grammar MyGrammar;
 
 program : statement+;
 
-assignment : GLOBAL? TYPE ID ASSIGN expr                       # declAssign
-           | ID ASSIGN expr                                    # varAssign
-           | TYPE ID ASSIGN LSQBRAC expr (COMMA expr)* RSQBRAC # arrayDeclAssign
-           | ID LSQBRAC expr RSQBRAC ASSIGN expr               # arrayAssign
+assignment : GLOBAL? TYPE ID ASSIGN (expr|comp)                              # declAssign
+           | ID ASSIGN (expr|comp)                                           # varAssign
+           | TYPE ID ASSIGN LSQBRAC (expr|comp) (COMMA (comp|expr))* RSQBRAC # arrayDeclAssign
+           | ID LSQBRAC expr RSQBRAC ASSIGN (expr|comp)                      # arrayAssign
            ;
 
 statement : IF LPARENT comp RPARENT block (ELSE block)?          # ifStat
@@ -23,7 +23,7 @@ block : LBRACE statement+ RBRACE;
 
 comment : '#' (~('#'))* '#';
 
-comp : expr COMP expr;
+comp : expr COMP expr ((AND|OR) comp)*;
 
 expr : expr ADD term # addExpr
      | expr NEG term # negExpr
@@ -31,6 +31,7 @@ expr : expr ADD term # addExpr
      | assignment    # assignExpr
      ;
 term: expo MULT term # multTerm
+    | expo DIV term  # divTerm
     | NEG term       # negTerm
     | expo           # expoTerm
     ;
@@ -71,6 +72,9 @@ EXP :     '^';
 NEG :     '-';
 MULT :    '*';
 ADD :     '+';
+DIV :     '/';
+AND :     '&&';
+OR :      '||';
 
 // types
 TYPE : TYPE_INT | TYPE_BOOL | TYPE_CHAR;
