@@ -584,6 +584,7 @@ public class MyGenerator extends MyGrammarBaseListener {
 		cmds.add("Push regB");
 		cmds.add("Pop regA");
 		cmds.add("Pop regC");                 // regC contains the counter
+		cmds.add("Compute Decr regC regC regC");
 		cmds.add("Load (ImmValue 0) regD");   // regD contains first zero, then result of comparison
 		cmds.add("Compute Equal regC regD regD"); // reverse (0 -> 1, 1 -> 0)
 		cmds.add("Branch regD (Rel 4)");
